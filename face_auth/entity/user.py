@@ -4,26 +4,24 @@ import uuid
 class User:
     def __init__(
         self,
-        Name: str,
+        name: str,
         username: str,
-        email_id: str,
-        ph_no: str,
-        password1: str,
-        password2: str,
-        uuid_: str = None,
+        email: str,
+        phone: str,
+        pass1: str,
+        pass2: str,
+        uid: str = None,
     ):
-        self.Name = Name
+        self.name = name
         self.username = username
-        self.email_id = email_id
-        self.ph_no = ph_no
-        self.password1 = password1
-        self.password2 = password2
-        self.uuid_ = uuid_
-        if not self.uuid_:
-            self.uuid_ = str(uuid.uuid4()) + str(uuid.uuid4())[0:4]
+        self.email = email
+        self.phone = phone
+        self.pass1 = pass1
+        self.pass2 = pass2
+        self.uid = uid or str(uuid.uuid4()) + str(uuid.uuid4())[:4]
 
-    def to_dict(self) -> dict:
+    def as_dict(self) -> dict:
         return self.__dict__
 
-    def __str__(self) -> str:
-        return str(self.to_dict())
+    def __repr__(self) -> str:
+        return str(self.as_dict())
