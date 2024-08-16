@@ -3,28 +3,30 @@ from face_auth.constant.database_constants import USER_COLLECTION_NAME
 from face_auth.entity.user import User
 
 
-class UserData:
-    """This class will have all the mongo db operations for user data
-    like get_user and save_user
-    """
+class UserDB:
+    """Handles MongoDB operations for user data."""
 
     def __init__(self) -> None:
         self.client = MongodbClient()
-        self.collection_name = USER_COLLECTION_NAME
-        self.collection = self.client.database[self.collection_name]
+        self.col_name = USER_COLLECTION_NAME
+        self.col = self.client.database[self.col_name]
 
-    def save_user(self, user: User) -> None:
-        self.collection.insert_one(user)
+    def add_user(self, user: User) -> None:
+        """Insert a new user into the collection."""
+        self.col.insert_one(user)
 
-    def get_user(self, query: dict):
-        user = self.collection.find_one(query)
-        return user
+    def fetch_user(self, query: dict):
+        """Retrieve a single user based on the query."""
+        return self.col.find_one(query)
 
-    def get_all_users(self):
+    def fetch_all_users(self):
+        """Retrieve all users (not implemented)."""
         pass
 
-    def delete_user(self, user_id: str) -> None:
+    def remove_user(self, user_id: str) -> None:
+        """Delete a user by user ID (not implemented)."""
         pass
 
-    def delete_all_users(self) -> None:
+    def remove_all_users(self) -> None:
+        """Delete all users (not implemented)."""
         pass
