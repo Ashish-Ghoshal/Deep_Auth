@@ -2,7 +2,7 @@ import sys
 
 
 class AppException(Exception):
-    """
+    
 
 
 

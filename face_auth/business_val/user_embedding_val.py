@@ -14,16 +14,16 @@ from face_auth.constant.embedding_constants import (
     FORCE_DETECT,
     SIM_THRESH,
 )
-from face_auth.data_access.user_embedding_data import UserEmbedData
+from face_auth.data_access.user_embedding_data import EmbeddingDB
 from face_auth.exception import AppException
-from face_auth.logger import log
+from face_auth.logger import logging
 
 
 class UserLoginEmbedVal:
     def __init__(self, uuid: str) -> None:
         self.uuid = uuid
-        self.user_data = UserEmbedData()
-        self.user = self.user_data.get_user_embed(uuid)
+        self.user_data = EmbeddingDB()
+        self.user = self.user_data.fetch_embedding(uuid)
 
     def validate(self) -> bool:
         try:
@@ -84,32 +84,32 @@ class UserLoginEmbedVal:
         """Compare current image embedding with database embedding"""
         try:
             if self.user:
-                log.info("Validating User Embedding...")
+                logging.info("Validating User Embedding...")
                 if not self.validate():
                     return False
 
-                log.info("Embedding Validation Successful...")
-                log.info("Generating Embedding List...")
+                logging.info("Embedding Validation Successful...")
+                logging.info("Generating Embedding List...")
                 embed_list = UserLoginEmbedVal.get_embed_list(files)
 
-                log.info("Embedding List Generated...")
-                log.info("Calculating Average Embedding...")
+                logging.info("Embedding List Generated...")
+                logging.info("Calculating Average Embedding...")
                 avg_embed_list = UserLoginEmbedVal.avg_embed(embed_list)
-                log.info("Average Embedding Calculated...")
+                logging.info("Average Embedding Calculated...")
 
                 db_embed = self.user["user_embed"]
 
-                log.info("Calculating Cosine Similarity...")
+                logging.info("Calculating Cosine Similarity...")
                 sim = UserLoginEmbedVal.cosine_sim(db_embed, avg_embed_list)
-                log.info("Cosine Similarity Calculated...")
+                logging.info("Cosine Similarity Calculated...")
 
                 if sim >= SIM_THRESH:
-                    log.info("User Authenticated Successfully...")
+                    logging.info("User Authenticated Successfully...")
                     return True
                 else:
-                    log.info("User Authentication Failed...")
+                    logging.info("User Authentication Failed...")
                     return False
-            log.info("User Authentication Failed...")
+            logging.info("User Authentication Failed...")
             return False
         except Exception as e:
             raise AppException(e, sys) from e
@@ -126,13 +126,13 @@ class UserLoginEmbedVal:
 class UserRegisterEmbedVal:
     def __init__(self, uuid: str) -> None:
         self.uuid = uuid
-        self.user_data = UserEmbedData()
+        self.user_data = EmbeddingDB()
 
     def save_embed(self, files: bytes):
         """Generate and save embedding to database"""
         try:
             embed_list = UserLoginEmbedVal.get_embed_list(files)
             avg_embed_list = UserLoginEmbedVal.avg_embed(embed_list)
-            self.user_data.save_user_embed(self.uuid, avg_embed_list)
+            self.user_data.add_embedding(self.uuid, avg_embed_list)
         except Exception as e:
             raise AppException(e, sys) from e

@@ -28,9 +28,9 @@ def test_route():
     return Response("Testing CI-CD")
 
 
-app.include_router(authentication.router)
+app.include_router(authentication.rtr)
 
-app.include_router(application.router)
+app.include_router(application.app_router)
 
 app.add_middleware(SessionMiddleware, secret_key="!secret")
 

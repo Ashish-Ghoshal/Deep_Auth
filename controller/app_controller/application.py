@@ -5,10 +5,10 @@ from starlette import status
 from starlette.responses import JSONResponse, RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from controller.auth_controller.authentication import get_current_user
+from controller.auth_controller.authentication import fetch_current_user
 from face_auth.business_val.user_embedding_val import (
-    UserLoginEmbeddingValidation,
-    UserRegisterEmbeddingValidation,
+    UserLoginEmbedVal,
+    UserRegisterEmbedVal,
 )
 
 app_router = APIRouter(
@@ -46,7 +46,7 @@ class ImgForm:
 @app_router.get("/", response_class=HTMLResponse)
 async def show_app(req: Request):
     try:
-        user = await get_current_user(req)
+        user = await fetch_current_user(req)
         if user is None:
             return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
         return template_loader.TemplateResponse(
@@ -65,11 +65,11 @@ async def login_embedding(req: Request):
     """Handles user login embedding"""
 
     try:
-        user = await get_current_user(req)
+        user = await fetch_current_user(req)
         if user is None:
             return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
 
-        login_val = UserLoginEmbeddingValidation(user["uuid"])
+        login_val = UserLoginEmbedVal(user["uuid"])
 
         form = ImgForm(req)
         await form.load_form_data()
@@ -136,7 +136,7 @@ async def register_embedding(req: Request):
             img_bytes = io.BytesIO(base64.b64decode(img_data)).getvalue()
             images.append(img_bytes)
     
-        reg_val = UserRegisterEmbeddingValidation(user_id)
+        reg_val = UserRegisterEmbedVal(user_id)
         reg_val.saveEmbedding(images)
 
         return template_loader.TemplateResponse(

@@ -8,7 +8,7 @@ from jose import jwt, JWTError
 from fastapi.templating import Jinja2Templates
 
 from face_auth.entity.user import User
-from face_auth.business_val.user_val import RegisterValidation, LoginValidation
+from face_auth.business_val.user_val import RegisterVal, LoginVal
 from face_auth.constant.auth_constant import SECRET_KEY, ALGORITHM
 
 tpls = Jinja2Templates(directory=os.path.join(os.getcwd(), "templates"))
@@ -85,8 +85,8 @@ def gen_access_token(user_id: str, uname: str, exp_delta: Optional[timedelta] = 
 @rtr.post("/token")
 async def login_with_token(resp: Response, login_data) -> dict:
     try:
-        user_val = LoginValidation(login_data['email'], login_data['password'])
-        user: Optional[str] = user_val.authenticateUserLogin()
+        user_val = LoginVal(login_data['email'], login_data['password'])
+        user: Optional[str] = user_val.auth_user()
         if not user:
             return {"status": False, "uuid": None, "response": resp}
         token_exp = timedelta(minutes=15)
@@ -141,19 +141,19 @@ async def handle_registration(req: Request):
         form = RegisterForm(req)
         await form.load_form()
         new_user = User(form.name, form.uname, form.email, form.phone, form.pwd1, form.pwd2)
-        req.session["uuid"] = new_user.uuid_
+        req.session["uuid"] = new_user.uid
 
-        user_val = RegisterValidation(new_user)
-        val_result = user_val.validateRegistration()
+        user_val = RegisterVal(new_user)
+        val_result = user_val.validate()
 
         if not val_result["status"]:
             return tpls.TemplateResponse("login.html",
                                          status_code=status.HTTP_401_UNAUTHORIZED,
                                          context={"request": req, "msg": val_result["msg"], "status_code": status.HTTP_404_NOT_FOUND})
 
-        user_val.saveUser()
+        user_val.save_user()
         return RedirectResponse(url="/application/register_embedding", status_code=status.HTTP_302_FOUND,
-                                headers={"uuid": new_user.uuid_})
+                                headers={"uuid": new_user.uid})
     except Exception as ex:
         return tpls.TemplateResponse("error.html", status_code=status.HTTP_404_NOT_FOUND,
                                      context={"request": req, "status": False})
