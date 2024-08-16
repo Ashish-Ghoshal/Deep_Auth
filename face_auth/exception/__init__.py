@@ -5,6 +5,7 @@ class AppException(Exception):
     """
 
 
+
     def __init__(self, err_msg: Exception, err_detail: sys):
         """
         :param err_msg: The error message.
