@@ -2,18 +2,18 @@ from face_auth.config.database import MongodbClient
 from face_auth.constant.database_constants import EMBEDDING_COLLECTION_NAME
 
 
-class UserEmbeddingData:
+class EmbeddingDB:
+    """Handles MongoDB operations for user embeddings."""
+
     def __init__(self) -> None:
         self.client = MongodbClient()
-        self.collection_name = EMBEDDING_COLLECTION_NAME
-        self.collection = self.client.database[self.collection_name]
+        self.col_name = EMBEDDING_COLLECTION_NAME
+        self.col = self.client.database[self.col_name]
 
-    def save_user_embedding(self, uuid_: str, embedding_list) -> None:
-        self.collection.insert_one({"UUID": uuid_, "user_embed": embedding_list})
+    def add_embedding(self, uuid: str, embedding) -> None:
+        """Insert a user's embedding into the collection."""
+        self.col.insert_one({"UUID": uuid, "user_embed": embedding})
 
-    def get_user_embedding(self, uuid_: str) -> dict:
-        user: dict = self.collection.find_one({"UUID": uuid_})
-        if user != None:
-            return user
-        else:
-            return None
+    def fetch_embedding(self, uuid: str) -> dict:
+        """Retrieve a user's embedding based on UUID."""
+        return self.col.find_one({"UUID": uuid})
