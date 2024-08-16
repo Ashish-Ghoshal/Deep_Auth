@@ -72,4 +72,4 @@ docker run -d -p 8000:8000 <IMAGEID OR IMAGENAME>
 - Azure App Services for deploying the application
 - GitHub Actions for CI/CD
 
-#### Please refer this [documentation](https://github.com/Rishav-hub/face_auth_dev/blob/main/docs/setup.md) for deployment to Azure.
+
