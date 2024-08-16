@@ -3,8 +3,7 @@ import sys
 
 class AppException(Exception):
     """
-    Custom exception class for detailed error reporting with file and line info.
-    """
+
 
     def __init__(self, err_msg: Exception, err_detail: sys):
         """
