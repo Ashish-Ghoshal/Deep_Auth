@@ -10,58 +10,44 @@ from face_auth.exception import AppException
 
 
 class CommonUtils:
-    def read_yaml_file(self, file_path: str) -> dict:
+    def load_yaml(self, file_path: str) -> dict:
         """
-        Reads a YAML file and returns the contents as a dictionary.
-        file_path: str
+        Load and return contents of a YAML file.
         """
         try:
-            with open(file_path, "rb") as yaml_file:
-                return yaml.safe_load(yaml_file)
+            with open(file_path, "rb") as file:
+                return yaml.safe_load(file)
         except Exception as e:
             raise AppException(e, sys) from e
 
-    def get_time(self):
+    def now_time(self) -> str:
         """
-        :return current time:
+        Get current time as a string.
         """
-        return datetime.now().strftime("%H:%M:%S").__str__()
+        return datetime.now().strftime("%H:%M:%S")
 
-    def get_date(self):
+    def now_date(self) -> str:
         """
-        :return current date:
+        Get current date as a string.
         """
-        return datetime.now().date().__str__()
+        return datetime.now().date().isoformat()
 
-    def get_difference_in_second(self, future_date_time: str, past_date_time: str):
+    def time_diff_sec(self, future_dt: str, past_dt: str) -> float:
         """
-        :param future_date_time:
-        :param past_date_time:
-        :return difference in second:
+        Calculate difference in seconds between two datetime strings.
         """
-        future_date = parse(future_date_time)
-        past_date = parse(past_date_time)
-        difference = future_date - past_date
-        total_seconds = difference.total_seconds()
-        return total_seconds
+        f_dt = parse(future_dt)
+        p_dt = parse(past_dt)
+        return (f_dt - p_dt).total_seconds()
 
-    def get_difference_in_milisecond(self, future_date_time: str, past_date_time: str):
+    def time_diff_ms(self, future_dt: str, past_dt: str) -> float:
         """
-        :param future_date_time:
-        :param past_date_time:
-        :return difference in milisecond:
+        Calculate difference in milliseconds between two datetime strings.
         """
-        total_seconds = self.get_difference_in_second(future_date_time, past_date_time)
-        total_milisecond = total_seconds * 1000
-        return total_milisecond
+        return self.time_diff_sec(future_dt, past_dt) * 1000
 
-    def get_environment_variable(self, variable_name: str):
+    def get_env_var(self, var_name: str) -> str:
         """
-        :param variable_name:
-        :return environment variable:
+        Get environment variable value. Fallback to .env if not set.
         """
-        if os.environ.get(variable_name) is None:
-            enironment_variable = dotenv_values(".env")
-            return enironment_variable[variable_name]
-        else:
-            return os.environ.get(variable_name)
+        return os.getenv(var_name, dotenv_values(".env").get(var_name, ""))
