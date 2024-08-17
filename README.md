@@ -12,7 +12,7 @@ Before we run the project,we make sure that you are having MongoDB in your local
 
 ### Step 1-: Clone the Repository
 ```
-git clone https://github.com/Ashish-Ghoshal/Deep_Auth.git
+https://github.com/Ashish-Ghoshal/Facial_Verification_app.git
 ```
 
 ### Step 2-: Creat conda environment
