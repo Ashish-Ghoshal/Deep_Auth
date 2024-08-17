@@ -1,39 +1,46 @@
-name: Deploy Application Docker Image to Azure Web App Service
+name: Docker Build and Push
 
 on:
   push:
     branches:
-      - main
-  
+      - azure-vm-deployment
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    - name: Check out the repository
+      uses: actions/checkout@v2
 
-      - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.AZURE_LOGIN_SERVER }}
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-      - name: Build and Push Application Image to Azure Container Registry
-        id: docker-push
-        run: |
-          docker build --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} --build-arg ALGORITHM=${{ secrets.ALGORITHM }} --build-arg ATLAS_CLUSTER_USERNAME=${{ secrets.ATLAS_CLUSTER_USERNAME }} --build-arg ATLAS_CLUSTER_PASSWORD=${{ secrets.ATLAS_CLUSTER_PASSWORD }} --build-arg DATABASE_NAME=${{ secrets.DATABASE_NAME }} --build-arg USER_COLLECTION_NAME=${{ secrets.USER_COLLECTION_NAME }} --build-arg EMBEDDING_COLLECTION_NAME=${{ secrets.EMBEDDING_COLLECTION_NAME }} -t ${{ secrets.AZURE_LOGIN_SERVER }}/${{ secrets.REPO_NAME }}:${{ github.sha }} .
+    - name: Login to DockerHub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-          docker push ${{ secrets.AZURE_LOGIN_SERVER }}/${{ secrets.REPO_NAME }}:${{ github.sha }}
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        push: true
+        tags: ${{ secrets.DOCKER_USERNAME }}/face_auth:latest
+        build-args: |
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          ALGORITHM=${{ secrets.ALGORITHM }}
+          MONGODB_URL_KEY=${{ secrets.MONGODB_URL_KEY }}
+          DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+          USER_COLLECTION_NAME=${{ secrets.USER_COLLECTION_NAME }}
+          EMBEDDING_COLLECTION_NAME=${{ secrets.EMBEDDING_COLLECTION_NAME }}
 
-      - name: Login via Azure CLI
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Deploy to Azure Web App Service
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: "faceappdev"
-          images: ${{ secrets.AZURE_LOGIN_SERVER }}/${{ secrets.REPO_NAME }}:${{ github.sha }}
+    - name: Deploy to Azure VM
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.AZURE_VM_SSH_KEY }} ${{ secrets.AZURE_VM_USERNAME }}@${{ secrets.AZURE_VM_IP }} << 'EOF'
+        docker pull ${{ secrets.DOCKER_USERNAME }}/face_auth:latest
+        docker stop face_auth || true
+        docker rm face_auth || true
+        docker run -d -p 8000:8000 --name face_auth ${{ secrets.DOCKER_USERNAME }}/face_auth:latest
+        EOF
