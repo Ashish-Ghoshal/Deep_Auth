@@ -81,7 +81,7 @@ async def login_embedding(req: Request):
             img_bytes = io.BytesIO(base64.b64decode(img_data)).getvalue()
             images.append(img_bytes)
 
-        if login_val.compareEmbedding(images):
+        if login_val.compare_embed(images):
             return template_loader.TemplateResponse(
                 "login_embedding.html",
                 status_code=status.HTTP_200_OK,
