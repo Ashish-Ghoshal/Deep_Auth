@@ -7,9 +7,9 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from fastapi.templating import Jinja2Templates
 
-from face_auth.entity.user import User
-from face_auth.business_val.user_val import RegisterVal, LoginVal
-from face_auth.constant.auth_constant import SECRET_KEY, ALGORITHM
+from auth_logic.entity.user import User
+from auth_logic.validation.user_val import RegisterVal, LoginVal
+from auth_logic.constant.auth_constant import SECRET_KEY, ALGORITHM
 
 tpls = Jinja2Templates(directory=os.path.join(os.getcwd(), "templates"))
 

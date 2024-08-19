@@ -7,7 +7,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
-from phases.app_controller import application
+from phases.app_phase import application
 from phases.auth_phase import authentication
 
 app = FastAPI()
