@@ -69,6 +69,6 @@ docker run -d -p 8000:8000 <IMAGEID OR IMAGENAME>
 - Azure App Services for deploying the applications
 - GitHub Actions for CI/CD
 
-## The End
+
 
 
