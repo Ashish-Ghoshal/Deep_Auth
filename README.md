@@ -241,7 +241,7 @@ Open Your Browser:
 
 ### Step 1-: Clone the Repository
 ```
-git clone https://github.com/Ashish-Ghoshal/Deep_Auth.git
+git clone https://github.com/Ashish-Ghoshal/Facial_Verification_app.git
 ```
 
 ### Step 2-: Creat conda environment
