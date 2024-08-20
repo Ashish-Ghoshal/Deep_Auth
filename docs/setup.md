@@ -1,100 +1,288 @@
-# Face Authentication System Infrastructure Setup
 
-## Azure Cloud Setup
 
-First we need to have an Azure account with credit card attached to i, else we will not be abler to Azure cloud resources. Once that is done login to your Azure Account, with your credentials. Once you have successfully logged in to Azure Portal
+# Face Authentication System
 
-## Installation of Azure CLI
+This project is an advanced Face Authentication System using MTCNN/Mediapipe for detection and FaceNet for embedding. It combines traditional and facial recognition methods for robust user validation. Deployed via Docker and Azure with CI/CD through GitHub Actions, the system features a Flask-based interface. 
 
-### Install Azure CLI in Windows System
+## Project Archietecture
+![Untitled Diagram drawio (1)](https://github.com/user-attachments/assets/9a4c4b56-f176-4803-a842-a7524d3a6269)
 
-To install azure cli in windows system, open the terminal in adminstrator mode and execute the following command
+### Step 1: Recreate the Azure Virtual Machine
+- Create the Virtual Machine:
+- Go to the Azure Portal.
+- Navigate to Virtual Machines > Create > Azure virtual machine.
+#### Configure the VM:
+- Image: Choose Ubuntu (latest version).
+- Size: Select Standard_B2ms (2 vCPUs, 8 GB RAM) or another size based on your needs.
+- Authentication: Use SSH public key or password for login (depending on your preference).
+- Download the secret key when prompted and store it safely.
+#### Networking:
 
-```bash
-$ProgressPreference = 'SilentlyContinue'; Invoke-WebRequest -Uri https://aka.ms/installazurecliwindows -OutFile .\AzureCLI.msi; Start-Process msiexec.exe -Wait -ArgumentList '/I AzureCLI.msi /quiet'; rm .\AzureCLI.msi
+   Go to network setting: Create Inbound Port Rule
+   Add a rule to allow TCP traffic on port `8000` from `0.0.0.0/0` (or restrict to your IP for better security).
+
+   ![image](https://github.com/user-attachments/assets/141ec866-6f2c-4e1a-9d6c-b012a2a1e885)
+
+
+#### Review and Create: Verify the settings and click Create.
+- Connect to the VM via SSH:
+- After the VM is created, obtain the public IP address.
+- Open your command prompt wherever you download your <file_name.pem> or cd to that location
+- Once you are inside that directory run the below command
+- username is the azure username and VM_IP_address is the VM's Public IP addrress
+SSH into the VM:
+
+
+
+```
+ssh -i <file_name.pem> <username>@<VM_IP_Address>
 ```
 
-After sometime the installation should be successfull, then you can check the status of azure cli
+### Step 2: Install and Set Up Docker
+- Update and Install Docker:
+Run the following commands on your VM:
 
-### Install Azure CLI in Linux System
-
-To install azure cli in linux system, execute the following commands
-
-```bash
-curl -L https://aka.ms/InstallAzureCli | bash
+```
+sudo apt-get update -y
+sudo apt-get upgrade -y
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo usermod -aG docker $USER
+newgrp docker
 ```
 
-### Install Azure CLI in MacOS system
+### Step 3: Clone the GitHub Repository and Build Docker Image
+Clone the Repository:
+Clone the specific branch <branch-name>:
 
-To install azure lic in MacOS system, execute the following commands
-
-```bash
-brew update
+```
+git clone -b <branch-name> https://github.com/YourUsername/YourRepository.git
+cd YourRepository
 ```
 
-```bash
-brew install azure-cli
+#### Build the Docker Image:
+- Build the Docker image with the required environment variables:
+
+```
+docker build -t face_auth \
+  --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} \
+  --build-arg ALGORITHM=${{ secrets.ALGORITHM }} \
+  --build-arg MONGODB_URL_KEY=${{ secrets.MONGODB_URL_KEY }} \
+  --build-arg DATABASE_NAME=${{ secrets.DATABASE_NAME }} \
+  --build-arg USER_COLLECTION_NAME=${{ secrets.USER_COLLECTION_NAME }} \
+  --build-arg EMBEDDING_COLLECTION_NAME=${{ secrets.EMBEDDING_COLLECTION_NAME }} .
 ```
 
-### Check Azure CLI status
+### Step 4: Set Up Nginx for Domain and SSL (OPTIONAL)
+- Install Nginx:
+- Install and configure Nginx:
 
-To check whether azure cli is working or not, execute the following commands
-
-```bash
-az version
+```
+sudo apt-get install nginx -y
 ```
 
-On successfull, execution of the command, you will be able to the azure cli version which confirms that azure cli is working fine.
+#### Configure Nginx for Your Domain:
+- Open the Nginx configuration file:
 
-## Setup Azure Subscriptions
-
-Before we use or access the azure resources, we need to create a subscription. On successfull login we will be able to see the azure portal from which we can create subscriptions. Navigate to subscriptions, and the click on that you will be navigated to subscriptions page, where you will see list of all subscriptions, by default there will no subscriptions with your account. 
-
-In the subscriptions page you will see a add button, and then select your subscription type as pay as you go, click on select offer. On clicking that you will redirected to login page, and accept to the agreement and click on next and then verify your identity via phone, any method of verifaction is fine like text message or call option. 
-
-Once the verifaction is done, add your credit card details and once the credit card details are added click on next and you will be asked for your address provide that and click on sign up. Wait for some time, you will be redirected to azure portal, and in the subscriptions category you will see that there is new subscription created. 
-
-Note that everything you create in azure will be tagged to this subscription itself.
-
-## Resource Group Creation
-
-Now that the subscriptions are created, we have to resource group where our resources will be created. To create the resource group go to the search bar and type resource groups and press enter, you will be navigated to resource groups page, by default no resource groups will be there, click on create resource group and you will be navigated to create resource group page, in there type the resource group name as "{your_project_name}rg", and then click on review + create button, once the validation is done, click on create and the resource group will be created.
-
-## Creating Azure Container Registry for storing Docker images
-
-To create azure container registry, we need to have existing resource group created. Once the resource group is created we can proceed to create the resource in the resource group. In the resource group page, there will be resource group named "{your_project_name}rg", click on that and then you will be navigated to the resource group page, by default, there are no resources created in resource group.
-
-To create a container registry, click on create button and you will be redirected to azure marketplace there in the search bar type "container registry" and create first option where container registry is shown, click create button and you will be redirected to create container registry page, in that give the registry name as "{your_project_name}acr", leave other options as default and click on review and create button and after the validation is completed, click on create button and container registry resource will start getting created. Once the container registry is created, click on the go to resource and you will redirected to container registry page. During deployment we need the REGISTRY_USERNAME and REGISTRY_PASSWORD, for authentication purposes. 
-
-In order to get these credentials, in the container registry page, you will see that in the settings tab column there is a option of access keys, for getting the REGISTRY_PASSWORD and REGISTRY_USERNAME, enable the admin user option and you will be able to username, password and password2. For REGISTRY_USERNAME use the username, and REGISTRY_PASSWORD use any of password and password2. 
-
-Store these credentials in github secrets. If we see the deployment workflow, there is secret name AZURE_LOGIN_SERVER which is login server present in the access key page. One more secret is REPO_NAME use {your_project_name}. 
-
-## Creating Azure Web App Service
-
-To create azure web app service , we need to have existing resource group created. Once the resource group is created we can proceed to create the resource in the resource group. In the resource group page, there will be resource group named "{your_project_name}rg", click on that and then you will be navigated to the resource group page. 
-
-Before creating the web app service, make sure that your container image is pushed to azure container registry, then only your application image will be deployed properly. Once that is done click on create button and in the search bar, type "container web app", and then click on the first option and then click on create. 
-
-Now you will be redirected to create web app page, select the web app name as {your_project_name}, in the publish section select docker container, and leave everything to default. Now click on "next -> docker" button, and in that select the image source as "Azure Container Registry" and in the registry, select the previously created registry name.
-
-Now click on "review and create" button and then click on create button, to create and deploy the container image in azure web app. Wait for the creation of resources to be completed. Once the creation of resources is done, click on the go to resource and you will redirected to web app page, where you will find the url of the container image.
-
-Before, we open the url we need to add some additional settings to the resource like WEBSITES_PORT and WEBSITES_CONTAINER_START_TIME_LIMIT. To add these additional settings, we need to click on the configuration of settings column, once you click on that, you will directed to configuration page under which you find the application settings. 
-
-Now click on "new application setting" button and give the name as "WEBSITES_CONTAINER_START_TIME_LIMIT" and the value as 20 if the image size is small (around 1GB or so) and value as 60 is image size is big (around 3GB). In the similar way add WEBSITES_PORT as name with value to be your container port number. Once this is done, click on save and then click continue. 
-
-After a few seconds, the application settings will be reflected. Now click on overview tab, and copy the url of webapp present under "URL". After sometime, you can see that web app is running and application is accessible by the internet using the given url.
-
-## Creating Azure Credentials for automating the deployments via GitHub Actions
-
-In order to perform automatic deployments to Azure Web App via GitHub actions, we need to create azure credentials, before we proceed to create azure credentials make sure that azure cli is installed in your system. Once that is done, execute the following command, to create a role in Azure which will give credentials to deploy to azure web app via github actions. 
-
-NOTE -: Execute this command in command prompt or powershell terminal.
-```bash
-az ad sp create-for-rbac --name "{your_app_name}" --role contributor --scopes /subscriptions/<subscription-id>/resourceGroups/<resource-group-name> --sdk-auth
+```
+sudo nano /etc/nginx/sites-available/default
 ```
 
-Fill in the neccessary details, in the command mentioned above, like "your_app_name","subscription-id" and "resource-group-name". On successfull execution of the commands, you will get json output, copy the josn output and paste it in the github secrets with AZURE_CREDENTIALS as the name.
+ - Replace the content with:
+nginx
+```
+server {
+    listen 80;
+    server_name <yourdomain> www.<yourdomain>;
 
-Once that is done, you will be able to perform automatic deployments to azure web app from github actions whenever there is code change to github.
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+#### Test and Reload Nginx:
+- Test the configuration:
+
+```
+sudo nginx -t
+```
+
+- Reload Nginx:
+
+```
+sudo systemctl reload nginx
+```
+
+### Step 5: Obtain an SSL Certificate with Let’s Encrypt (OPTIONAL)
+#### Install Certbot:
+- Install Certbot for Nginx:
+
+```
+sudo apt-get install certbot python3-certbot-nginx -y
+```
+
+- Obtain SSL Certificate:
+Run Certbot:
+
+```
+sudo certbot --nginx -d faceauth.online -d www.faceauth.online
+```
+
+Follow the prompts to complete the SSL installation. If Hostinger not configured properly follow the steps below.
+
+### Steps to Update DNS Settings on Hostinger
+#### Log in to Hostinger:
+- Go to Hostinger and log in to your account.
+#### Access the Domain Management Area:
+- Once logged in, click on the “Domains” tab from the top menu.
+- Find the domain yourdomain in your list of domains and click on Manage.
+#### Navigate to DNS Settings:
+- In the domain management screen, look for the “DNS/Nameservers” or “DNS Zone” section. This is where you can manage the DNS records for your domain.
+#### Update the A Record:
+- You need to update the A record so that it points to your Azure VM’s public IP address. You should have two A records:
+- A Record for the root domain (yourdomain):
+  
+      Type: A
+      Name/Host: @ (this represents the root domain)
+      Points to: <Your_Azure_VM_Public_IP> (replace with your actual VM IP)
+      TTL: Default (or 300 seconds)
+
+
+- A Record for the www subdomain (www.yourdomain):
+  
+      Type: A
+      Name/Host: www 
+      Points to: <Your_Azure_VM_Public_IP> 
+      TTL: Default (or 300 seconds)
+
+
+#### Save Changes:
+- After entering the correct IP address for both A records, save the changes.
+#### Wait for DNS Propagation:
+- DNS changes can take a few minutes to propagate across the internet, though sometimes it may take up to 24 hours. You can monitor the propagation using a tool like DNS Checker.
+#### Verify the Configuration:
+- Use DNS Checker to verify that yourdomain and www.yourdomain are both pointing to your Azure VM’s public IP address.
+#### Re-run Certbot:
+- Once DNS propagation is complete and your domain points to your Azure VM, SSH back into your Azure VM and run Certbot again:
+bash
+
+```
+sudo certbot --nginx -d faceauth.online -d www.faceauth.online
+```
+
+
+### Step 6: Set Up GitHub Secrets for CI/CD
+- Add GitHub Secrets:
+- Go to your GitHub repository, navigate to Settings > Secrets and variables > Actions.
+Add the following secrets:
+- DOCKER_USERNAME: Your Docker Hub username.
+- DOCKER_PASSWORD: Your Docker Hub password or access token.
+- AZURE_VM_SSH_KEY: The private SSH key used to connect to the Azure VM.
+- AZURE_VM_USERNAME: The username for the Azure VM.
+- AZURE_VM_IP: The public IP address of the Azure VM.
+- SECRET_KEY, ALGORITHM, MONGODB_URL_KEY, DATABASE_NAME, USER_COLLECTION_NAME, EMBEDDING_COLLECTION_NAME: The sensitive environment variables used by your application.
+
+### Step 7: Set Up GitHub Actions for CI/CD
+- Ensure the .github/workflows/docker-build.yml file contains the correct settings:
+- Make sure the workflow is set to trigger on the <branch-name> branch:
+yaml
+```
+on:
+  push:
+    branches:
+      - <branch-name>
+```
+
+#### Trigger the Workflow:
+Make changes or push to the <branch-name> branch to trigger the CI/CD pipeline:
+
+```
+git add .
+git commit -m "Trigger CI/CD for deployment"
+git push origin <branch-name>
+```
+
+### Step 8: Deploy the Docker Container
+- Start the Docker Container:
+- Ensure the container is running after the pipeline completes:
+
+```
+docker run -d -p 8000:8000 face_auth
+```
+If it doesn't work try:
+```
+docker run -d -p 8000:8000 --name face_auth \
+  -e SECRET_KEY=<SECRET_KEY> \
+  -e ALGORITHM=<ALGORITHM> \
+  -e MONGODB_URL_KEY=<MONGODB_URL_KEY> \
+  -e DATABASE_NAME=<DATABASE_NAME> \
+  -e USER_COLLECTION_NAME=<USER_COLLECTION_NAME> \
+  -e EMBEDDING_COLLECTION_NAME=<EMBEDDING_COLLECTION_NAME> \
+  face_auth
+```
+
+
+### Step 9: Access Your Application Securely
+Open Your Browser:
+- Visit https://yourdomain:8000 to ensure everything is working correctly.
+
+
+### Step 1-: Clone the Repository
+```
+git clone https://github.com/Ashish-Ghoshal/Facial_Verification_app.git
+```
+
+### Step 2-: Creat conda environment
+```
+conda create -p ./env python=3.8.13 -y
+```
+
+### Step 3-: Activate Conda environment
+```
+conda activate ./env
+```
+
+### Step 4-: Install requirements
+```
+pip install -r requirements.txt
+```
+
+### Step 5-: Export the environment variable
+```
+export SECRET_KEY=<SECRET_KEY>
+
+
+export ALGORITHM=<ALGORITHM>
+
+export MONGODB_URL_KEY=<MONGODB_URL_KEY>
+
+export DATABASE_NAME=<DATABASE_NAME>
+
+export USER_COLLECTION_NAME=<USER_COLLECTION_NAME>
+
+export EMBEDDING_COLLECTION_NAME=<EMBEDDING_COLLECTION_NAME>
+```
+
+### Step 6-: Run the application server
+```
+python app.py
+```
+
+## Run Locally
+
+### Build the Docker Image
+```
+docker build -t face_auth --build-arg SECRET_KEY=<SECRET_KEY> --build-arg ALGORITHM=<ALGORITHM> --build-arg MONGODB_URL_KEY=<MONGODB_URL_KEY> --build-arg DATABASE_NAME=<DATABASE_NAME> --build-arg USER_COLLECTION_NAME=<USER_COLLECTION_NAME> --build-arg EMBEDDING_COLLECTION_NAME=<EMBEDDING_COLLECTION_NAME> . 
+```
+
+### Run the Docker Image
+
+```
+docker run -d -p 8000:8000 <IMAGEID OR IMAGENAME>
+```
+
