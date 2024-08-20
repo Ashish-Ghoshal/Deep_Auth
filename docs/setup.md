@@ -232,6 +232,9 @@ Open Your Browser:
 - Visit https://yourdomain:8000 to ensure everything is working correctly.
 
 
+## Run Locally
+
+
 ### Step 1-: Clone the Repository
 ```
 git clone https://github.com/Ashish-Ghoshal/Facial_Verification_app.git
@@ -273,7 +276,7 @@ export EMBEDDING_COLLECTION_NAME=<EMBEDDING_COLLECTION_NAME>
 python app.py
 ```
 
-## Run Locally
+
 
 ### Build the Docker Image
 ```
