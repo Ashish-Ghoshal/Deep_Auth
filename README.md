@@ -65,7 +65,7 @@ docker run -d -p 8000:8000 <IMAGEID OR IMAGENAME>
 ## Deployment to Azure
 
 ### Services used
-- Azure container Registry (ACR) for Docker image of project is stored
+- Docker HUB for Docker image of project is stored
 - Azure App Services for deploying the applications
 - GitHub Actions for CI/CD
 
