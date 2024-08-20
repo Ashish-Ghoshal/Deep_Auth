@@ -162,7 +162,7 @@ Follow the prompts to complete the SSL installation. If Hostinger not configured
 #### Wait for DNS Propagation:
 - DNS changes can take a few minutes to propagate across the internet, though sometimes it may take up to 24 hours. You can monitor the propagation using a tool like DNS Checker.
 #### Verify the Configuration:
-- Use DNS Checker to verify that <yourdomain> and www.<yourdomain> are both pointing to your Azure VM’s public IP address.
+- Use DNS Checker to verify that yourdomain and www.yourdomain are both pointing to your Azure VM’s public IP address.
 #### Re-run Certbot:
 - Once DNS propagation is complete and your domain points to your Azure VM, SSH back into your Azure VM and run Certbot again:
 bash
