@@ -187,12 +187,12 @@ Add the following secrets:
 - Ensure the .github/workflows/docker-build.yml file contains the correct settings:
 - Make sure the workflow is set to trigger on the <branch-name> branch:
 yaml
-
+```
 on:
   push:
     branches:
       - <branch-name>
-
+```
 
 #### Trigger the Workflow:
 Make changes or push to the <branch-name> branch to trigger the CI/CD pipeline:
