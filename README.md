@@ -15,6 +15,7 @@ This project is an advanced Face Authentication System using MTCNN/Mediapipe for
 - Image: Choose Ubuntu (latest version).
 - Size: Select Standard_B2ms (2 vCPUs, 8 GB RAM) or another size based on your needs.
 - Authentication: Use SSH public key or password for login (depending on your preference).
+- Download the secret key when prompted and store it safely.
 #### Networking:
 
    Go to network setting: Create Inbound Port Rule
@@ -26,6 +27,9 @@ This project is an advanced Face Authentication System using MTCNN/Mediapipe for
 #### Review and Create: Verify the settings and click Create.
 - Connect to the VM via SSH:
 - After the VM is created, obtain the public IP address.
+- Open your command prompt wherever you download your <file_name.pem> or cd to that location
+- Once you are inside that directory run the below command
+- username is the azure username and VM_IP_address is the VM's Public IP addrress
 SSH into the VM:
 
 
