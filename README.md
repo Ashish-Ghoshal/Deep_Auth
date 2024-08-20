@@ -67,7 +67,7 @@ docker run -d -p 8000:8000 <IMAGEID OR IMAGENAME>
 ### Services used
 - Docker HUB for Docker image of project is stored
 - Azure App Services for deploying the applications
-- GitHub Actions for CI/CD
+- GitHub Actions for CI/ CD
 
 
 
