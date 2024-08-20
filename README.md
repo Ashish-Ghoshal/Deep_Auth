@@ -5,7 +5,7 @@
 This project is an advanced Face Authentication System using MTCNN/Mediapipe for detection and FaceNet for embedding. It combines traditional and facial recognition methods for robust user validation. Deployed via Docker and Azure with CI/CD through GitHub Actions, the system features a Flask-based interface. 
 
 ## Project Archietecture
-<img width="844" alt="image" src="https://user-images.githubusercontent.com/57321948/195135349-9888d9ea-af5d-4ee2-8aa4-1e57342add05.png">
+![Untitled Diagram drawio (1)](https://github.com/user-attachments/assets/9a4c4b56-f176-4803-a842-a7524d3a6269)
 
 ### Step 1: Recreate the Azure Virtual Machine
 - Create the Virtual Machine:
@@ -69,7 +69,7 @@ docker build -t face_auth \
   --build-arg EMBEDDING_COLLECTION_NAME=${{ secrets.EMBEDDING_COLLECTION_NAME }} .
 ```
 
-### Step 4: Set Up Nginx for Domain and SSL
+### Step 4: Set Up Nginx for Domain and SSL (OPTIONAL)
 - Install Nginx:
 - Install and configure Nginx:
 
@@ -114,7 +114,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-### Step 5: Obtain an SSL Certificate with Let’s Encrypt
+### Step 5: Obtain an SSL Certificate with Let’s Encrypt (OPTIONAL)
 #### Install Certbot:
 - Install Certbot for Nginx:
 
@@ -132,23 +132,24 @@ sudo certbot --nginx -d faceauth.online -d www.faceauth.online
 Follow the prompts to complete the SSL installation. If Hostinger not configured properly follow the steps below.
 
 ### Steps to Update DNS Settings on Hostinger
-####Log in to Hostinger:
+#### Log in to Hostinger:
 - Go to Hostinger and log in to your account.
 #### Access the Domain Management Area:
 - Once logged in, click on the “Domains” tab from the top menu.
-- Find the domain <yourdomain> in your list of domains and click on Manage.
+- Find the domain yourdomain in your list of domains and click on Manage.
 #### Navigate to DNS Settings:
 - In the domain management screen, look for the “DNS/Nameservers” or “DNS Zone” section. This is where you can manage the DNS records for your domain.
 #### Update the A Record:
 - You need to update the A record so that it points to your Azure VM’s public IP address. You should have two A records:
-- A Record for the root domain (<yourdomain>):
--- Type: A
--- Name/Host: @ (this represents the root domain)
--- Points to: <Your_Azure_VM_Public_IP> (replace with your actual VM IP)
--- TTL: Default (or 300 seconds)
+- A Record for the root domain (yourdomain):
+  
+      Type: A
+      Name/Host: @ (this represents the root domain)
+      Points to: <Your_Azure_VM_Public_IP> (replace with your actual VM IP)
+      TTL: Default (or 300 seconds)
 
 
-- A Record for the www subdomain (www.<yourdomain>):
+- A Record for the www subdomain (www.yourdomain):
 -- Type: A
 -- Name/Host: www
 -- Points to: <Your_Azure_VM_Public_IP> 
