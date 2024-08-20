@@ -102,7 +102,7 @@ server {
 ```
 
 #### Test and Reload Nginx:
--Test the configuration:
+- Test the configuration:
 
 ```
 sudo nginx -t
@@ -150,10 +150,12 @@ Follow the prompts to complete the SSL installation. If Hostinger not configured
 
 
 - A Record for the www subdomain (www.yourdomain):
--- Type: A
--- Name/Host: www
--- Points to: <Your_Azure_VM_Public_IP> 
--- TTL: Default (or 300 seconds)
+  
+      Type: A
+      Name/Host: www 
+      Points to: <Your_Azure_VM_Public_IP> 
+      TTL: Default (or 300 seconds)
+
 
 #### Save Changes:
 - After entering the correct IP address for both A records, save the changes.
@@ -225,10 +227,5 @@ docker run -d -p 8000:8000 --name face_auth \
 Open Your Browser:
 - Visit https://yourdomain to ensure everything is working correctly.
 
-
-### Services used
-- Docker Hub for Docker image of project is stored
-- Azure Virtual Machine for deploying the applications
-- GitHub Actions for CI/CD
 
 
