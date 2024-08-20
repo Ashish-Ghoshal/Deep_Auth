@@ -229,7 +229,7 @@ docker run -d -p 8000:8000 --name face_auth \
 
 ### Step 9: Access Your Application Securely
 Open Your Browser:
-- Visit https://yourdomain to ensure everything is working correctly.
+- Visit https://yourdomain:8000 to ensure everything is working correctly.
 
 
 
