@@ -232,4 +232,35 @@ Open Your Browser:
 - Visit https://yourdomain:8000 to ensure everything is working correctly.
 
 
+I've extracted the project and reviewed its structure up to a depth of 4 levels. Here is a high-level overview:
 
+### **Project Structure Overview**
+
+1. **Root Directory**:
+   - **`Dockerfile`**: Configuration for containerizing the application.
+   - **`README.md`**: Documentation explaining the project.
+   - **`app.py`**: Likely the main entry point for running the application.
+   - **`requirements.txt`**: Lists the dependencies required for the project.
+   - **`.github/workflows/web_app.yml`**: GitHub Actions configuration for CI/CD.
+
+2. **Key Folders**:
+   - **`auth_logic/`**:
+     - Contains the core authentication logic, configurations, and database connections.
+     - **`config/`**: Configuration files, including database setup.
+   
+   - **`phases/`**:
+     - This folder likely replaces the earlier `controller/` folder and might contain different phases or stages of the application logic.
+
+   - **`templates/`**:
+     - HTML files used for rendering the frontend in Flask or similar frameworks.
+
+   - **`static/applications/`**:
+     - Contains JavaScript files crucial for the frontend's functionality.
+
+3. **Important Files**:
+   - **`app.py`**: The main script likely responsible for initializing and running the application.
+   - **`Dockerfile`**: Sets up the environment and runs the app in a container.
+   - **`README.md`**: Provides insights into the purpose and usage of the project.
+   - **`requirements.txt`**: Specifies required Python packages.
+
+Now that I have a better understanding of the structure, feel free to ask any specific questions, such as how certain files interact, explanations of specific components, or any other details you're curious about!
