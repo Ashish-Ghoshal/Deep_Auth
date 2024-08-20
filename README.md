@@ -2,7 +2,7 @@
 
 # Face Authentication System
 
-This is a modern Face Authentication System which includes state-of-art algorithms to detect face and generate face embedding. This system contains endpoints which can be integrated to any device depending on the requirements. 
+This project is an advanced Face Authentication System using MTCNN/Mediapipe for detection and FaceNet for embedding. It combines traditional and facial recognition methods for robust user validation. Deployed via Docker and Azure with CI/CD through GitHub Actions, the system features a Flask-based interface. 
 
 ## Project Archietecture
 <img width="844" alt="image" src="https://user-images.githubusercontent.com/57321948/195135349-9888d9ea-af5d-4ee2-8aa4-1e57342add05.png">
@@ -115,7 +115,7 @@ sudo systemctl reload nginx
 ```
 
 ### Step 5: Obtain an SSL Certificate with Let’s Encrypt
-###Install Certbot:
+#### Install Certbot:
 - Install Certbot for Nginx:
 
 ```
@@ -142,17 +142,17 @@ Follow the prompts to complete the SSL installation. If Hostinger not configured
 #### Update the A Record:
 - You need to update the A record so that it points to your Azure VM’s public IP address. You should have two A records:
 - A Record for the root domain (<yourdomain>):
-Type: A
-Name/Host: @ (this represents the root domain)
-Points to: <Your_Azure_VM_Public_IP> (replace with your actual VM IP)
-TTL: Default (or 300 seconds)
+-- Type: A
+-- Name/Host: @ (this represents the root domain)
+-- Points to: <Your_Azure_VM_Public_IP> (replace with your actual VM IP)
+-- TTL: Default (or 300 seconds)
 
 
-A Record for the www subdomain (www.<yourdomain>):
-Type: A
-Name/Host: www
-Points to: <Your_Azure_VM_Public_IP> 
-TTL: Default (or 300 seconds)
+- A Record for the www subdomain (www.<yourdomain>):
+-- Type: A
+-- Name/Host: www
+-- Points to: <Your_Azure_VM_Public_IP> 
+-- TTL: Default (or 300 seconds)
 
 #### Save Changes:
 - After entering the correct IP address for both A records, save the changes.
@@ -222,73 +222,12 @@ docker run -d -p 8000:8000 --name face_auth \
 
 ### Step 9: Access Your Application Securely
 Open Your Browser:
-- Visit https://<yourdomain> to ensure everything is working correctly.
+- Visit https://yourdomain to ensure everything is working correctly.
 
-
-
-
-
-
-## Run the Application
-Before we run the project,we make sure that you are having MongoDB in your local system, with Compass since we are using MongoDB for data storage. You also need Azure account to access the service like ACS and App services.
-
-### Step 1-: Clone the Repository
-```
-https://github.com/Ashish-Ghoshal/Facial_Verification_app.git
-```
-
-### Step 2-: Creat conda environment
-```
-conda create -p ./env python=3.8.13 -y
-```
-
-### Step 3-: Activate Conda environment
-```
-conda activate ./env
-```
-
-### Step 4-: Install requirements
-```
-pip install -r requirements.txt
-```
-
-### Step 5-: Export the environment variable
-```
-export SECRET_KEY=<SECRET_KEY>
-
-export ALGORITHM=<ALGORITHM>
-
-export MONGODB_URL_KEY=<MONGODB_URL_KEY>
-
-export DATABASE_NAME=<DATABASE_NAME>
-
-export USER_COLLECTION_NAME=<USER_COLLECTION_NAME>
-
-export EMBEDDING_COLLECTION_NAME=<EMBEDDING_COLLECTION_NAME>
-```
-
-### Step 6-: Run the application server
-```
-python app.py
-```
-
-## Run Locally
-
-### Build the Docker Image
-```
-docker build -t face_auth --build-arg SECRET_KEY=<SECRET_KEY> --build-arg ALGORITHM=<ALGORITHM> --build-arg MONGODB_URL_KEY=<MONGODB_URL_KEY> --build-arg DATABASE_NAME=<DATABASE_NAME> --build-arg USER_COLLECTION_NAME=<USER_COLLECTION_NAME> --build-arg EMBEDDING_COLLECTION_NAME=<EMBEDDING_COLLECTION_NAME> . 
-```
-
-### Run the Docker Image
-
-```
-docker run -d -p 8000:8000 <IMAGEID OR IMAGENAME>
-```
-## Deployment to Azure
 
 ### Services used
-- Azure container Registry (ACR) for Docker image of project is stored
-- Azure App Services for deploying the applications
+- Docker Hub for Docker image of project is stored
+- Azure Virtual Machine for deploying the applications
 - GitHub Actions for CI/CD
 
 
