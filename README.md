@@ -263,18 +263,7 @@ I've extracted the project and reviewed its structure up to a depth of 4 levels.
    - **`README.md`**: Provides insights into the purpose and usage of the project.
    - **`requirements.txt`**: Specifies required Python packages.
 
-Based on your requirements, I'll create a table with a two-level header structure. The first row of the header will represent the different model combinations (e.g., Mediapipe + Facenet, MTCNN + Arcface, etc.), and the second row will split each combination into three metrics: Accuracy, Speed, and Size. The rows of the table will represent the performance of each combination on different benchmark datasets.
 
-### Sample Table Structure
-
-Here’s a mockup of how the table will look:
-
-| **Dataset**      | **Mediapipe + Facenet** |                |                | **Mediapipe + VGG-16** |                |                | **MTCNN + Arcface** |                |                | **MTCNN + Facenet** |                |                |
-|------------------|-------------------------|----------------|----------------|-------------------------|----------------|----------------|---------------------|----------------|----------------|---------------------|----------------|----------------|
-|                  | **Accuracy**            | **Speed (ms)** | **Size (MB)**  | **Accuracy**            | **Speed (ms)** | **Size (MB)**  | **Accuracy**        | **Speed (ms)** | **Size (MB)**  | **Accuracy**        | **Speed (ms)** | **Size (MB)**  |
-| **LFW**          | 98.5%                   | 50             | 85             | 97.0%                   | 80             | 120            | 99.2%               | 70             | 90             | 98.5%               | 60             | 85             |
-| **CASIA-WebFace**| 97.5%                   | 55             | 85             | 96.0%                   | 85             | 120            | 98.8%               | 75             | 90             | 97.5%               | 65             | 85             |
-| **VGGFace2**     | 98.0%                   | 52             | 85             | 97.2%                   | 82             | 120            | 99.0%               | 72             | 90             | 98.2%               | 62             | 85             |
 
 ### Explanation:
 - **Datasets:** Rows list different benchmark datasets like LFW, CASIA-WebFace, and VGGFace2.
