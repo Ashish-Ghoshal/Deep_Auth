@@ -286,7 +286,7 @@ The table will be filled with dummy values reflecting the expected relative perf
 ### Key Insights:
 - **Mediapipe + Facenet**: High speed and moderate accuracy, ideal for real-time applications with moderate model size.
 - **Mediapipe + VGG-16**: Lower speed and larger model size, slightly reduced accuracy, suitable where computational resources are ample.
-- **MTCNN + Arcface**: High accuracy but slightly lower speed compared to Mediapipe + Facenet. Useful for applications prioritizing accuracy over speed.
+- **MTCNN + Arcface**: High accuracy but slightly lower speed compared to Mediapipe + Facenet. Useful for applications prioritizing accuracy over speed .
 - **MTCNN + Facenet**: Balanced approach with high accuracy and moderate speed, suited for a range of real-time verification tasks.
 
 This table provides a comparative overview to help choose the best combination for your specific needs.
