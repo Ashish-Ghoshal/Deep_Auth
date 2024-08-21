@@ -130,7 +130,7 @@ sudo apt-get install certbot python3-certbot-nginx -y
 Run Certbot:
 
 ```
-sudo certbot --nginx -d faceauth.online -d www.faceauth.online
+sudo certbot --nginx -d <yourdomain> -d www.<yourdomain>
 ```
 
 Follow the prompts to complete the SSL installation. If Hostinger not configured properly follow the steps below.
