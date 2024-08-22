@@ -184,7 +184,7 @@ Add the following secrets:
 - DOCKER_PASSWORD: Your Docker Hub password or access token.
 - AZURE_VM_SSH_KEY: The private SSH key used to connect to the Azure VM.
 - AZURE_VM_USERNAME: The username for the Azure VM.
-- AZURE_VM_IP: The public IP address of the Azure VM.
+- AZURE_VM_IP: The public IP address of the Azure VM .
 - SECRET_KEY, ALGORITHM, MONGODB_URL_KEY, DATABASE_NAME, USER_COLLECTION_NAME, EMBEDDING_COLLECTION_NAME: The sensitive environment variables used by your application.
 
 ### Step 7: Set Up GitHub Actions for CI/CD
