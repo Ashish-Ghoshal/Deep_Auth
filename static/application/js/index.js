@@ -1,98 +1,72 @@
-const textInputs = document.querySelectorAll("input");
-const passwordInput = document.querySelector('.password-input');
-const eyeBtn = document.querySelector('.eye-btn');
-const signUpBtn = document.querySelector('.sign-up-btn');
-const signInBtn = document.querySelector('.sign-in-btn');
-const signUpForm = document.querySelector('.sign-up-form');
-const signInForm = document.querySelector('.sign-in-form');
+// Element selectors for handling UI interactions
+const textFields = document.querySelectorAll("input");
+const passwordField = document.querySelector('.pwd-input');
+const togglePasswordBtn = document.querySelector('.toggle-pwd-btn');
+const switchToSignUpBtn = document.querySelector('.switch-sign-up');
+const switchToSignInBtn = document.querySelector('.switch-sign-in');
+const signUpFormContainer = document.querySelector('.sign-up-container');
+const signInFormContainer = document.querySelector('.sign-in-container');
 
-
-
-textInputs.forEach(textInput =>{
-    textInput.addEventListener("focus",()=>{
-        let parent = textInput.parentNode;
-        parent.classList.add("active");
-    });
-    textInput.addEventListener("blur",()=>{
-        let parent = textInput.parentNode;
-        parent.classList.remove("active");
-    });
+// Function to handle focus events on input fields
+textFields.forEach(inputField => {
+    inputField.addEventListener("focus", () => highlightParentContainer(inputField));
+    inputField.addEventListener("blur", () => removeHighlightFromContainer(inputField));
 });
 
-eyeBtn.addEventListener("click",()=>{
-    if(passwordInput.type === 'password'){
-        passwordInput.type = 'text';
-        eyeBtn.innerHTML = "<i class='uil uil-eye'></i>"
-    }
-    else{
-        passwordInput.type = 'password';
-        eyeBtn.innerHTML = "<i class='uil uil-eye-slash'></i>"
-    }
-});
-
-signUpBtn.addEventListener("click",()=>{
-    signInForm.classList.add('hide');
-    signUpForm.classList.add('show');
-    signInForm.classList.remove('show');
-    
-});
-
-signInBtn.addEventListener("click",()=>{
-    signInForm.classList.remove('hide');
-    signUpForm.classList.remove('show');
-    signInForm.classList.add('show');
-});
-
-const errorElement = document.querySelector('#error_msg');
-const codeElement = document.querySelector('#status_code');
-if(codeElement.value == 404){
-    swal("Oops!", errorElement.value, "error"); 
+// Highlight the parent container when the input field is focused
+function highlightParentContainer(field) {
+    let parentDiv = field.parentNode;
+    parentDiv.classList.add("active");
 }
 
-/* var myInput = document.getElementById("error_msg");
-    setTimeout(() => {
-        if (myInput && myInput.value) {
-            console.log(myInput.value)
-            alert(myInput.value);
-          }
-      }, 3000)
-      console.log(myInput.value)
-      $('#register_form').submit(function(){
-    $.ajax({
-      url: '/auth/register',
-      type: 'POST',
-      data : $('#register_form').serialize(),
-      success: function(){
-        console.log('form submitted.');
-      }
-    });
-    return false;
-});
+// Remove highlight when the input field loses focus
+function removeHighlightFromContainer(field) {
+    let parentDiv = field.parentNode;
+    parentDiv.classList.remove("active");
+}
 
+// Toggle password visibility in the password field
+togglePasswordBtn.addEventListener("click", togglePasswordVisibility);
 
-var frm = $('#register_form');
+// Toggles between showing and hiding the password
+function togglePasswordVisibility() {
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        togglePasswordBtn.innerHTML = "<i class='icon-eye-open'></i>";
+    } else {
+        passwordField.type = 'password';
+        togglePasswordBtn.innerHTML = "<i class='icon-eye-close'></i>";
+    }
+}
 
+// Switch to the sign-up form
+switchToSignUpBtn.addEventListener("click", displaySignUpForm);
 
-    frm.submit(function (e) {
+// Displays the sign-up form and hides the sign-in form
+function displaySignUpForm() {
+    signInFormContainer.classList.add('hide');
+    signUpFormContainer.classList.add('show');
+    signInFormContainer.classList.remove('show');
+}
 
-        e.preventDefault();
+// Switch to the sign-in form
+switchToSignInBtn.addEventListener("click", displaySignInForm);
 
-        $.ajax({
-            type: frm.attr('method'),
-            url: frm.attr('action'),
-            data: frm.serialize(),
-            success: function (data) {
-                console.log('Submission was successful.');
-                console.log(data);
-            },
-            error: function (data) {
-                console.log('An error occurred.');
-                var myInput = document.getElementById("error_msg");
-                if (myInput && myInput.value) {
-                    console.log(myInput.value)
-                    alert(myInput.value);
-                  }
-            },
-        });
-    });
-    */ 
+// Displays the sign-in form and hides the sign-up form
+function displaySignInForm() {
+    signInFormContainer.classList.remove('hide');
+    signUpFormContainer.classList.remove('show');
+    signInFormContainer.classList.add('show');
+}
+
+// Handle error messages based on the status code
+const errorMsgElement = document.querySelector('#error-message');
+const statusCodeElement = document.querySelector('#status-code');
+if (statusCodeElement && statusCodeElement.value == 404) {
+    displayErrorMessage(errorMsgElement.value);
+}
+
+// Displays an error message using an alert
+function displayErrorMessage(message) {
+    swal("Oops!", message, "error");
+}

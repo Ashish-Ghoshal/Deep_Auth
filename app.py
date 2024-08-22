@@ -1,39 +1,47 @@
+# main_entry.py
+
 import os
 import uvicorn
+import logging
 from fastapi import FastAPI, Response
-from fastapi.templating import Jinja2Templates
 from starlette import status
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
+from utility.middleware_setup import initialize_middleware
+from utility.route_setup import configure_routes
 
-from phases.app_phase import application
-from phases.auth_phase import authentication
+# Set up basic logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory='static'), name="static")
+def build_app() -> FastAPI:
+    """Build and returns the FastAPI application object."""
+    logging.info("Starting up the FastAPI application...")
+    
+    app = FastAPI()
+    
+    # Mount static files to serve static content
+    app.mount("/static", StaticFiles(directory='static_files'), name="static_content")
+    
+    # Initialize middleware and routes
+    initialize_middleware(app)
+    configure_routes(app)
+    
+    logging.info("Middleware and routes have been set up successfully.")
 
-templates = Jinja2Templates(directory= os.path.join(os.getcwd(), "templates"))
+    @app.get("/")
+    def redirect_to_auth():
+        """Redirects to the authentication page"""
+        try:
+            logging.info("Redirecting user to the authentication page.")
+            return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+        except Exception as e:
+            logging.error(f"An error occurred during redirection: {e}")
+            return Response("Server error, please try again later.", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-@app.get("/")
-def read_root():
-    try:
-        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-    except Exception as e:
-        return templates.TemplateResponse("error.html", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-@app.get("/test")
-def test_route():
-    return Response("Testing CI-CD")
-
-
-app.include_router(authentication.rtr)
-
-app.include_router(application.app_router)
-
-app.add_middleware(SessionMiddleware, secret_key="!secret")
-
+    return app
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, debug=True)
+    fastapi_app = build_app()
+    logging.info("Running the FastAPI application.")
+    uvicorn.run(fastapi_app, host="127.0.0.1", port=8080)

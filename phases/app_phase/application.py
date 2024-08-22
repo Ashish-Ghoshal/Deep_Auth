@@ -5,149 +5,134 @@ from starlette import status
 from starlette.responses import JSONResponse, RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from phases.auth_phase.authentication import fetch_current_user
-from auth_logic.validation.user_embedding_val import (
-    UserLoginEmbedVal,
-    UserRegisterEmbedVal,
+from phases.auth_phase.user_authentikator import fetch_user_info  
+from auth_logic.validation.au_processes import (
+    ValidateLoginEmbed,
+    ValidateRegisterEmbed,
 )
 
-app_router = APIRouter(
-    prefix="/app",
-    tags=["app"],
-    responses={"401": {"description": "Unauthorized"}},
+app_handler = APIRouter(
+    prefix="/app_routes",  # Unique route prefix
+    tags=["application_process"],
+    responses={"401": {"description": "Not Authorized"}},
 )
-template_loader = Jinja2Templates(directory=os.path.join(os.getcwd(), "templates"))
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+tpl_renderer = Jinja2Templates(directory=os.path.join(os.getcwd(), "templates"))
 
-class ImgForm:
+# Environment variable change for GPU/CPU usage
+os.environ["CUDA_PREFERENCE"] = "-1"
+
+class ImageDataHandler:
+    """Class to handle the processing and retrieval of image data from forms."""
+    
     def __init__(self, req: Request):
-        self.req: Request = req
-        self.img1: Optional[str] = None
-        self.img2: Optional[str] = None
-        self.img3: Optional[str] = None
-        self.img4: Optional[str] = None
-        self.img5: Optional[str] = None
-        self.img6: Optional[str] = None
-        self.img7: Optional[str] = None
-        self.img8: Optional[str] = None
+        self.req = req
+        self.image_slots = [None] * 8  # Different way to store image data
 
-    async def load_form_data(self):
+    async def extract_form_images(self):
+        """Extract images from form data."""
         form_data = await self.req.form()
-        self.img1 = form_data.get("image1")
-        self.img2 = form_data.get("image2")
-        self.img3 = form_data.get("image3")
-        self.img4 = form_data.get("image4")
-        self.img5 = form_data.get("image5")
-        self.img6 = form_data.get("image6")
-        self.img7 = form_data.get("image7")
-        self.img8 = form_data.get("image8")
+        self.image_slots = [form_data.get(f"img_{i+1}") for i in range(8)]  # Different naming pattern
 
-@app_router.get("/", response_class=HTMLResponse)
-async def show_app(req: Request):
+async def redirect_if_not_authenticated(req: Request):
+    """Redirect to login if user is not authenticated."""
+    user_info = await fetch_user_info(req)
+    if not user_info:
+        return RedirectResponse(url="/auth_route", status_code=status.HTTP_302_FOUND)
+    return user_info
+
+@app_handler.get("/", response_class=HTMLResponse)
+async def display_app_page(req: Request):
     try:
-        user = await fetch_current_user(req)
-        if user is None:
-            return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-        return template_loader.TemplateResponse(
-            "login_embedding.html",
-            context={"request": req, "status_code": status.HTTP_200_OK, "msg": "Login Successful", "user": user['username']}
+        user_details = await redirect_if_not_authenticated(req)
+        return tpl_renderer.TemplateResponse(
+            "embedded_login.html",
+            context={"request": req, "status_code": status.HTTP_200_OK, "msg": "Login Successful", "user": user_details['username']}
         )
     except Exception as e:
-        return template_loader.TemplateResponse(
-            "error.html",
+        return tpl_renderer.TemplateResponse(
+            "error_screen.html",
             status_code=status.HTTP_404_NOT_FOUND,
-            context={"request": req, "status": False, "msg": "Error in Login Embedding"}
+            context={"request": req, "status": False, "msg": "Login Embedding Failed"}
         )
 
-@app_router.post("/")
-async def login_embedding(req: Request):
-    """Handles user login embedding"""
+@app_handler.post("/")
+async def execute_login_embedding(req: Request):
+    """Handles embedding process during login."""
 
     try:
-        user = await fetch_current_user(req)
-        if user is None:
-            return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+        user_data = await redirect_if_not_authenticated(req)
 
-        login_val = UserLoginEmbedVal(user["uuid"])
+        embed_validator = ValidateLoginEmbed(user_data["user_identifier"])
 
-        form = ImgForm(req)
-        await form.load_form_data()
-        images = []
-        img_list = [form.img1, form.img2, form.img3, form.img4, form.img5, form.img6, form.img7, form.img8]
+        image_processor = ImageDataHandler(req)
+        await image_processor.extract_form_images()
+        img_data_set = [convert_image_data(img) for img in image_processor.image_slots]
 
-        for img in img_list:
-            img_data = img[img.find(",") + 1:]
-            img_bytes = io.BytesIO(base64.b64decode(img_data)).getvalue()
-            images.append(img_bytes)
-
-        if login_val.compare_embed(images):
-            return template_loader.TemplateResponse(
-                "login_embedding.html",
+        if embed_validator.compare_stored_embeddings(img_data_set):
+            return tpl_renderer.TemplateResponse(
+                "embedded_login.html",
                 status_code=status.HTTP_200_OK,
-                context={"request": req, "status_code": status.HTTP_200_OK, "msg": "User Authenticated", "user": user['username']}
+                context={"request": req, "status_code": status.HTTP_200_OK, "msg": "User Verified", "user": user_data['username']}
             )
         else:
-            return template_loader.TemplateResponse(
-                "unauthorized.html",
+            return tpl_renderer.TemplateResponse(
+                "unauthorized_access.html",
                 status_code=status.HTTP_404_NOT_FOUND,
-                context={"status": False, 'status_code': status.HTTP_404_NOT_FOUND, "msg": "Authentication Failed"}
+                context={"status": False, 'status_code': status.HTTP_404_NOT_FOUND, "msg": "Authentication Unsuccessful"}
             )
     except Exception as e:
-        return template_loader.TemplateResponse(
-            "unauthorized.html",
+        return tpl_renderer.TemplateResponse(
+            "unauthorized_access.html",
             status_code=status.HTTP_404_NOT_FOUND,
-            context={"request": req, "status": False, "msg": "Login Embedding Error"}
+            context={"request": req, "status": False, "msg": "Error Processing Login Embedding"}
         )
 
-@app_router.get("/register_embedding", response_class=HTMLResponse)
-async def show_register_embedding(req: Request):
+@app_handler.get("/register_embed", response_class=HTMLResponse)
+async def render_registration_page(req: Request):
     try:
-        user_id = req.session.get("uuid")
+        user_id = req.session.get("user_identifier")
         if user_id is None:
-            return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
-        return template_loader.TemplateResponse(
-            "register_embedding.html",
-            context={"request": req, "status_code": status.HTTP_200_OK, "msg": "Login Successful"}
+            return RedirectResponse(url="/auth_route", status_code=status.HTTP_302_FOUND)
+        return tpl_renderer.TemplateResponse(
+            "embedded_registration.html",
+            context={"request": req, "status_code": status.HTTP_200_OK, "msg": "Proceed to Registration"}
         )
     except Exception as e:
-        return template_loader.TemplateResponse(
-            "error.html",
+        return tpl_renderer.TemplateResponse(
+            "error_screen.html",
             status_code=status.HTTP_404_NOT_FOUND,
-            context={"request": req, "status": False, "msg": "Error in Register Embedding"}
+            context={"request": req, "status": False, "msg": "Error During Registration"}
         )
 
-@app_router.post("/register_embedding")
-async def register_embedding(req: Request):
-    """Handles user registration embedding"""
+@app_handler.post("/register_embed")
+async def execute_registration_embedding(req: Request):
+    """Process and store user registration embedding."""
 
     try:
-        user_id = req.session.get("uuid")
+        user_id = req.session.get("user_identifier")
         if user_id is None:
-            return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+            return RedirectResponse(url="/auth_route", status_code=status.HTTP_302_FOUND)
         
-        form = ImgForm(req)
-        await form.load_form_data()
-        images = []
-        img_list = [form.img1, form.img2, form.img3, form.img4, form.img5, form.img6, form.img7, form.img8]
-
-        for img in img_list:
-            img_data = img[img.find(",") + 1:]
-            img_bytes = io.BytesIO(base64.b64decode(img_data)).getvalue()
-            images.append(img_bytes)
+        image_processor = ImageDataHandler(req)
+        await image_processor.extract_form_images()
+        img_data_set = [convert_image_data(img) for img in image_processor.image_slots]
     
-        reg_val = UserRegisterEmbedVal(user_id)
-        reg_val.saveEmbedding(images)
+        reg_validator = ValidateRegisterEmbed(user_id)
+        reg_validator.save_user_embeddings(img_data_set)
 
-        return template_loader.TemplateResponse(
-            "login.html",
+        return tpl_renderer.TemplateResponse(
+            "login_screen.html",
             status_code=status.HTTP_200_OK,
-            context={"request": req, "status": False, "msg": "Embedding Stored Successfully"}
+            context={"request": req, "status": False, "msg": "Embedding Successfully Stored"}
         )
     except Exception as e:
-        return template_loader.TemplateResponse(
-            "error.html",
+        return tpl_renderer.TemplateResponse(
+            "error_screen.html",
             status_code=status.HTTP_404_NOT_FOUND,
-            context={"request": req, "status": False, "msg": "Error in Storing Embedding"}
+            context={"request": req, "status": False, "msg": "Error Storing Embedding"}
         )
 
+def convert_image_data(data_uri):
+    """Convert base64 image data to raw bytes."""
+    return io.BytesIO(base64.b64decode(data_uri[data_uri.find(",") + 1:])).getvalue()

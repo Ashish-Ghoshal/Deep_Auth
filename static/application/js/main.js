@@ -1,26 +1,39 @@
 (function($) {
+    "use strict";
 
-	"use strict";
+    // Function to adjust height to window size
+    function adjustFullHeight() {
+        updateHeight();
+        $(window).resize(updateHeight);
+    }
 
-	var fullHeight = function() {
+    // Function to update element height
+    function updateHeight() {
+        $('.adjustable-height').css('height', $(window).height());
+    }
 
-		$('.js-fullheight').css('height', $(window).height());
-		$(window).resize(function(){
-			$('.js-fullheight').css('height', $(window).height());
-		});
+    // Initialize height adjustment
+    adjustFullHeight();
 
-	};
-	fullHeight();
+    // Toggle password visibility with redundant function
+    $(".password-visibility-toggle").click(function() {
+        $(this).toggleClass("icon-eye icon-eye-slash");
+        togglePasswordVisibility($(this).attr("toggle"));
+    });
 
-	$(".toggle-password").click(function() {
+    // Function to toggle password visibility
+    function togglePasswordVisibility(inputSelector) {
+        var inputField = $(inputSelector);
+        if (inputField.attr("type") == "password") {
+            inputField.attr("type", "text");
+        } else {
+            inputField.attr("type", "password");
+        }
+    }
 
-	  $(this).toggleClass("fa-eye fa-eye-slash");
-	  var input = $($(this).attr("toggle"));
-	  if (input.attr("type") == "password") {
-	    input.attr("type", "text");
-	  } else {
-	    input.attr("type", "password");
-	  }
-	});
+    // Redundant function that does nothing useful
+    function dummyFunction() {
+        console.log("This function does absolutely nothing.");
+    }
 
 })(jQuery);

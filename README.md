@@ -185,7 +185,7 @@ Add the following secrets:
 - AZURE_VM_SSH_KEY: The private SSH key used to connect to the Azure VM.
 - AZURE_VM_USERNAME: The username for the Azure VM.
 - AZURE_VM_IP: The public IP address of the Azure VM.
-- SECRET_KEY, ALGORITHM, MONGODB_URL_KEY, DATABASE_NAME, USER_COLLECTION_NAME, EMBEDDING_COLLECTION_NAME: The sensitive environment variables used by your application.
+- SEC_KEY_NEW, ALGO_TYPE, DB_URL_NEW, DB_NAME_NEW, USR_COL_NEW, EMBED_COL_NEW: The sensitive environment variables used by your application.
 
 ### Step 7: Set Up GitHub Actions for CI/CD
 - Ensure the .github/workflows/docker-build.yml file contains the correct settings:
@@ -217,12 +217,12 @@ docker run -d -p 8000:8000 face_auth
 If it doesn't work try:
 ```
 docker run -d -p 8000:8000 --name face_auth \
-  -e SECRET_KEY=<SECRET_KEY> \
-  -e ALGORITHM=<ALGORITHM> \
-  -e MONGODB_URL_KEY=<MONGODB_URL_KEY> \
-  -e DATABASE_NAME=<DATABASE_NAME> \
-  -e USER_COLLECTION_NAME=<USER_COLLECTION_NAME> \
-  -e EMBEDDING_COLLECTION_NAME=<EMBEDDING_COLLECTION_NAME> \
+  -e SEC_KEY_NEW=<SEC_KEY_NEW> \
+  -e ALGO_TYPE=<ALGO_TYPE> \
+  -e DB_URL_NEW=<DB_URL_NEW> \
+  -e DB_NAME_NEW=<DB_NAME_NEW> \
+  -e USR_COL_NEW=<USR_COL_NEW> \
+  -e EMBED_COL_NEW=<EMBED_COL_NEW> \
   face_auth
 ```
 

@@ -20,22 +20,20 @@ C:.
 +---auth_logic
 |   |   __init__.py
 |   |   
-|   +---config
+|   +---data_access
+|   |   |   usr_db_ops.py
+|   |   |   usr_emb_ops.py
 |   |   |   __init__.py
 |   |   |   
-|   |   +---database
-|   |   |   |   __init__.py
-|   |   |   |   
-|   |   |   \---__pycache__
-|   |   |           __init__.cpython-38.pyc
-|   |   |           
 |   |   \---__pycache__
+|   |           user_data.cpython-38.pyc
+|   |           user_embedding_data.cpython-38.pyc
 |   |           __init__.cpython-38.pyc
 |   |           
-|   +---constant
-|   |   |   auth_constant.py
-|   |   |   database_constants.py
-|   |   |   embedding_constants.py
+|   +---usr_constants
+|   |   |   auth_cfg.py
+|   |   |   db_cfg.py
+|   |   |   embed_cfg.py
 |   |   |   __init__.py
 |   |   |   
 |   |   \---__pycache__
@@ -44,32 +42,25 @@ C:.
 |   |           embedding_constants.cpython-38.pyc
 |   |           __init__.cpython-38.pyc
 |   |           
-|   +---data_access
-|   |   |   user_data.py
-|   |   |   user_embedding_data.py
-|   |   |   __init__.py
-|   |   |   
-|   |   \---__pycache__
-|   |           user_data.cpython-38.pyc
-|   |           user_embedding_data.cpython-38.pyc
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---entity
-|   |   |   user.py
-|   |   |   user_embedding.py
+|   +---usr_entities
+|   |   |   emd_data_entity.py
+|   |   |   usr_data_entity.py
 |   |   |   __init__.py
 |   |   |   
 |   |   \---__pycache__
 |   |           user.cpython-38.pyc
 |   |           __init__.cpython-38.pyc
 |   |           
-|   +---exception
+|   +---usr_exceptions
+|   |   |   error_handler.py
 |   |   |   __init__.py
 |   |   |   
+|   |   +---app_errors
 |   |   \---__pycache__
 |   |           __init__.cpython-38.pyc
 |   |           
-|   +---logger
+|   +---usr_log
+|   |   |   setup_logg.py
 |   |   |   __init__.py
 |   |   |   
 |   |   \---__pycache__
@@ -84,8 +75,8 @@ C:.
 |   |           __init__.cpython-38.pyc
 |   |           
 |   +---validation
-|   |   |   user_embedding_val.py
-|   |   |   user_val.py
+|   |   |   au_processes.py
+|   |   |   validation_process.py
 |   |   |   __init__.py
 |   |   |   
 |   |   \---__pycache__
@@ -96,15 +87,50 @@ C:.
 |   \---__pycache__
 |           __init__.cpython-38.pyc
 |           
-+---controller
-|   +---app_controller
++---auth__logic
+|   +---business_val
 |   |   \---__pycache__
-|   |           application.cpython-38.pyc
+|   |           user_embedding_val.cpython-38.pyc
+|   |           user_val.cpython-38.pyc
 |   |           __init__.cpython-38.pyc
 |   |           
-|   +---auth_controller
+|   +---config
+|   |   +---database
+|   |   |   \---__pycache__
+|   |   |           __init__.cpython-38.pyc
+|   |   |           
 |   |   \---__pycache__
-|   |           authentication.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---constant
+|   |   \---__pycache__
+|   |           auth_constant.cpython-38.pyc
+|   |           database_constants.cpython-38.pyc
+|   |           embedding_constants.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---data_access
+|   |   \---__pycache__
+|   |           user_data.cpython-38.pyc
+|   |           user_embedding_data.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---entity
+|   |   \---__pycache__
+|   |           user.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---exception
+|   |   \---__pycache__
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---logger
+|   |   \---__pycache__
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---utils
+|   |   \---__pycache__
+|   |           util.cpython-38.pyc
 |   |           __init__.cpython-38.pyc
 |   |           
 |   \---__pycache__
@@ -58600,55 +58626,13 @@ C:.
 |                   which.cpython-38.pyc
 |                   win_add2path.cpython-38.pyc
 |                   
-+---face_auth
-|   +---business_val
-|   |   \---__pycache__
-|   |           user_embedding_val.cpython-38.pyc
-|   |           user_val.cpython-38.pyc
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---config
-|   |   +---database
-|   |   |   \---__pycache__
-|   |   |           __init__.cpython-38.pyc
-|   |   |           
-|   |   \---__pycache__
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---constant
-|   |   \---__pycache__
-|   |           auth_constant.cpython-38.pyc
-|   |           database_constants.cpython-38.pyc
-|   |           embedding_constants.cpython-38.pyc
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---data_access
-|   |   \---__pycache__
-|   |           user_data.cpython-38.pyc
-|   |           user_embedding_data.cpython-38.pyc
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---entity
-|   |   \---__pycache__
-|   |           user.cpython-38.pyc
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---exception
-|   |   \---__pycache__
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---logger
-|   |   \---__pycache__
-|   |           __init__.cpython-38.pyc
-|   |           
-|   +---utils
-|   |   \---__pycache__
-|   |           util.cpython-38.pyc
-|   |           __init__.cpython-38.pyc
-|   |           
-|   \---__pycache__
-|           __init__.cpython-38.pyc
-|           
++---experiments
+|       Copy_of_ArcFace_with_Reference.ipynb
+|       mediapipe+mobilefacenet.ipynb
+|       Mediapipe_incorporation_muti_face_handling.ipynb
+|       mediapipe_landmarking_real_time.ipynb
+|       model_comparisons.ipynb
+|       
 +---logs
 |       log_2024-08-09-21-23-23.log
 |       log_2024-08-10-12-04-19.log
@@ -58707,7 +58691,24 @@ C:.
 |       log_2024-08-20-00-02-46.log
 |       log_2024-08-20-15-56-22.log
 |       log_2024-08-20-15-57-07.log
+|       log_2024-08-21-15-38-02.log
+|       log_2024-08-21-15-40-47.log
+|       log_2024-08-22-08-13-07.log
 |       
++---phase
+|   +---app_controller
+|   |   \---__pycache__
+|   |           application.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---auth_controller
+|   |   \---__pycache__
+|   |           authentication.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   \---__pycache__
+|           __init__.cpython-38.pyc
+|           
 +---phases
 |   |   __init__.py
 |   |   
@@ -58720,7 +58721,7 @@ C:.
 |   |           __init__.cpython-38.pyc
 |   |           
 |   +---auth_phase
-|   |   |   authentication.py
+|   |   |   user_authentikator.py
 |   |   |   __init__.py
 |   |   |   
 |   |   \---__pycache__
@@ -58822,14 +58823,23 @@ C:.
 |                   select2.min.css
 |                   select2.min.js
 |                   
-\---templates
-        add-app.html
-        error.html
-        index.html
-        login.html
-        login_embedding.html
-        register.html
-        register_embedding.html
-        unauthorized.html
-        view-app.html
++---templates
+|       add-app.html
+|       error.html
+|       index.html
+|       login.html
+|       login_embedding.html
+|       register.html
+|       register_embedding.html
+|       unauthorized.html
+|       view-app.html
+|       
++---usr_db_conf
+|       mongo_setup.py
+|       __init__.py
+|       
+\---utility
+        middleware_setup.py
+        route_setup.py
+        __init__.py
         
