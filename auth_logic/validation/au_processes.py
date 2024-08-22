@@ -1,20 +1,17 @@
-# au_processes.py
-
 import io
 import sys
 import logging
 from ast import Bytes
 from typing import List
-
 import numpy as np
 from deepface import DeepFace
 from PIL import Image
 import mediapipe as mp
 import cv2
-
 from usr_constants.embed_cfg import DET_BACKEND, EMB_MODEL, FORCE_DET, SIM_THRESH
 from connect_data.usr_db_ops import UserDatabaseOperations
 from auth_logic.usr_exceptions.error_handler import CustomError
+from liveness_detection.blink_detection import BlinkDetector  # Import the BlinkDetector
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -29,6 +26,7 @@ class LoginCheck:
         self.user_id = user_id
         self.db = UserDatabaseOperations()
         self.user_data = self.db.get_embed(user_id)
+        self.blink_detector = BlinkDetector()  # Initialize BlinkDetector
 
     def check_valid(self) -> bool:
         """Check if user data is valid."""
@@ -39,6 +37,10 @@ class LoginCheck:
             return True
         except Exception as e:
             raise CustomError(e, sys) from e
+
+    def detect_liveness(self, img: np.ndarray) -> bool:
+        """Detect liveness using blink detection."""
+        return self.blink_detector.detect_blinks(img)
 
     @staticmethod
     def get_face(img: np.ndarray) -> np.ndarray:
@@ -121,6 +123,14 @@ class LoginCheck:
         """Match current embed to stored data."""
         try:
             if self.check_valid():
+                for data in images:
+                    img = Image.open(io.BytesIO(data))
+                    arr = np.array(img)
+                    
+                    if not self.detect_liveness(arr):
+                        log.warning("Liveness check failed.")
+                        return False
+
                 embeds = self.get_embeds(images)
                 avg = self.avg_embeds(embeds)
                 

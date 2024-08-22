@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from fastapi.templating import Jinja2Templates
 
+from auth_logic.validation.au_processes import LoginCheck
 from auth_logic.usr_entities.usr_data_entity import UserData
 from auth_logic.validation.validation_process import ValidateUserRegistration, ValidateUserLogin
 from auth_logic.usr_constants.auth_cfg import SEC_KEY_NEW, ALGO_TYPE
@@ -49,6 +50,7 @@ def create_token_payload(user_id: str, uname: str, exp_delta: Optional[timedelta
     expire = datetime.utcnow() + (exp_delta if exp_delta else timedelta(minutes=15))
     return {"sub": user_id, "username": uname, "exp": expire}
 
+
 @auth_router.post("/token_auth")
 async def login_with_token(resp: Response, login_data) -> dict:
     user_val = ValidateUserLogin(login_data['email'], login_data['password'])
@@ -56,10 +58,16 @@ async def login_with_token(resp: Response, login_data) -> dict:
     if not user:
         return {"status": False, "uuid": None, "response": resp}
     
+    # Liveness check with blink detection during authentication
+    liveness_check = LoginCheck(user["UUID"])
+    if not liveness_check.match_embed(login_data['images']):  # Pass the images for liveness and embedding check
+        return {"status": False, "uuid": None, "response": resp}
+
     token_exp = timedelta(minutes=15)
     token = generate_access_token(user["UUID"], user["username"], exp_delta=token_exp)
     resp.set_cookie(key="access_token", value=token, httponly=True)
     return {"status": True, "uuid": user["UUID"], "response": resp}
+
 
 @auth_router.get("/", response_class=HTMLResponse)
 async def display_login_page(req: Request):
