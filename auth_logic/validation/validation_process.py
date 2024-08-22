@@ -5,7 +5,7 @@ import sys
 from typing import Optional
 from passlib.context import CryptContext
 
-from auth_logic.data_access.usr_db_ops import UserDatabaseOperations  
+from auth_logic.connect_data.usr_db_ops import UserDatabaseOperations  
 from auth_logic.usr_entities.usr_data_entity import UserData  
 from auth_logic.usr_exceptions.error_handler import CustomError
 from auth_logic.usr_log.setup_logg import logger  

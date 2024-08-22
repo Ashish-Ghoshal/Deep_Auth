@@ -13,7 +13,7 @@ import mediapipe as mp
 import cv2
 
 from usr_constants.embed_cfg import DET_BACKEND, EMB_MODEL, FORCE_DET, SIM_THRESH
-from data_access.usr_db_ops import EmbedDB
+from connect_data.usr_db_ops import UserDatabaseOperations
 from auth_logic.usr_exceptions.error_handler import CustomError
 
 # Set up logging
@@ -27,7 +27,7 @@ mp_draw = mp.solutions.drawing_utils
 class LoginCheck:
     def __init__(self, user_id: str) -> None:
         self.user_id = user_id
-        self.db = EmbedDB()
+        self.db = UserDatabaseOperations()
         self.user_data = self.db.get_embed(user_id)
 
     def check_valid(self) -> bool:
@@ -142,7 +142,7 @@ class LoginCheck:
 class RegProcess:
     def __init__(self, user_id: str) -> None:
         self.user_id = user_id
-        self.db = EmbedDB()
+        self.db = UserDatabaseOperations()
 
     def save_embed(self, images: bytes):
         """Save user embedding to DB."""
