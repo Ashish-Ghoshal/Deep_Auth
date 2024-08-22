@@ -6,7 +6,7 @@ import yaml
 from dateutil.parser import parse
 from dotenv import dotenv_values
 
-from face_auth.exception import AppException
+from auth__logic.exception import AppException
 
 
 class CommonUtils:

@@ -4,10 +4,10 @@ from typing import Optional
 
 from passlib.context import CryptContext
 
-from face_auth.data_access.user_data import UserData
-from face_auth.entity.user import User
-from face_auth.exception import AppException
-from face_auth.logger import logging
+from auth__logic.data_access.user_data import UserData
+from auth__logic.entity.user import User
+from auth__logic.exception import AppException
+from auth__logic.logger import logging
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

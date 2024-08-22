@@ -1,6 +1,6 @@
 import pymongo
 
-from face_auth.constant.database_constants import (
+from auth__logic.constant.database_constants import (
     DATABASE_NAME,
     MONGODB_URL_KEY
 )

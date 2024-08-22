@@ -1,5 +1,5 @@
-from face_auth.config.database import MongodbClient
-from face_auth.constant.database_constants import EMBEDDING_COLLECTION_NAME
+from auth__logic.config.database import MongodbClient
+from auth__logic.constant.database_constants import EMBEDDING_COLLECTION_NAME
 
 
 class UserEmbeddingData:

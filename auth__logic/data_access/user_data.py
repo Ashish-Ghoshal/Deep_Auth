@@ -1,6 +1,6 @@
-from face_auth.config.database import MongodbClient
-from face_auth.constant.database_constants import USER_COLLECTION_NAME
-from face_auth.entity.user import User
+from auth__logic.config.database import MongodbClient
+from auth__logic.constant.database_constants import USER_COLLECTION_NAME
+from auth__logic.entity.user import User
 
 
 class UserData:

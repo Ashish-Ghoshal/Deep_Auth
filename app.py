@@ -7,8 +7,8 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import RedirectResponse
 from starlette.staticfiles import StaticFiles
 
-from controller.app_controller import application
-from controller.auth_controller import authentication
+from phase.app_controller import application
+from phase.auth_controller import authentication
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory='static'), name="static")

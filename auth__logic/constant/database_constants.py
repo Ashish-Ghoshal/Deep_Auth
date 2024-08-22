@@ -1,4 +1,4 @@
-from face_auth.utils.util import CommonUtils
+from auth__logic.utils.util import CommonUtils
 
 MONGODB_URL_KEY = CommonUtils().get_environment_variable("MONGODB_URL_KEY")
 DATABASE_NAME = CommonUtils().get_environment_variable("DATABASE_NAME")

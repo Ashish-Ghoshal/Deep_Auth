@@ -8,15 +8,15 @@ from deepface import DeepFace
 from deepface.commons.functions import detect_face
 from PIL import Image
 
-from face_auth.constant.embedding_constants import (
+from auth__logic.constant.embedding_constants import (
     DETECTOR_BACKEND,
     EMBEDDING_MODEL_NAME,
     ENFORCE_DETECTION,
     SIMILARITY_THRESHOLD,
 )
-from face_auth.data_access.user_embedding_data import UserEmbeddingData
-from face_auth.exception import AppException
-from face_auth.logger import logging
+from auth__logic.data_access.user_embedding_data import UserEmbeddingData
+from auth__logic.exception import AppException
+from auth__logic.logger import logging
 
 
 class UserLoginEmbeddingValidation:

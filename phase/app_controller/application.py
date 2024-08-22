@@ -6,8 +6,8 @@ from starlette import status
 from starlette.responses import JSONResponse, RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 
-from controller.auth_controller.authentication import get_current_user
-from face_auth.business_val.user_embedding_val import (
+from phase.auth_controller.authentication import get_current_user
+from auth__logic.business_val.user_embedding_val import (
     UserLoginEmbeddingValidation,
     UserRegisterEmbeddingValidation,
 )

@@ -9,9 +9,9 @@ from jose import jwt, JWTError
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 
-from face_auth.entity.user import User
-from face_auth.business_val.user_val import RegisterValidation, LoginValidation
-from face_auth.constant.auth_constant import SECRET_KEY, ALGORITHM
+from auth__logic.entity.user import User
+from auth__logic.business_val.user_val import RegisterValidation, LoginValidation
+from auth__logic.constant.auth_constant import SECRET_KEY, ALGORITHM
 
 
 templates = Jinja2Templates(directory= os.path.join(os.getcwd(), "templates"))
