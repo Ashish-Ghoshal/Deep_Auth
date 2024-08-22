@@ -10,8 +10,8 @@ from jose import jwt, JWTError
 from fastapi.templating import Jinja2Templates
 
 from auth_logic.usr_entities.usr_data_entity import UserData
-from auth_logic.validation.validation_process import ValidateRegister, ValidateLogin
-from auth_logic.usr_constants.auth_cfg import SECRET_KEY, ALGORITHM
+from auth_logic.validation.validation_process import ValidateUserRegistration, ValidateUserLogin
+from auth_logic.usr_constants.auth_cfg import SEC_KEY_NEW, ALGO_TYPE
 
 template_loader = Jinja2Templates(directory=os.path.join(os.getcwd(), "viewpages"))
 
@@ -30,7 +30,7 @@ async def fetch_user_details(req: Request):
 
 async def decode_jwt_token(token: str):
     try:
-        data = jwt.decode(token, SECURE_KEY, algorithms=[ENCRYPTION_ALGO])
+        data = jwt.decode(token, SEC_KEY_NEW, algorithms=[ALGO_TYPE])
         user_id = data.get("sub")
         uname = data.get("username")
         if not user_id or not uname:
@@ -43,7 +43,7 @@ async def decode_jwt_token(token: str):
 
 def generate_access_token(user_id: str, uname: str, exp_delta: Optional[timedelta] = None) -> str:
     payload = create_token_payload(user_id, uname, exp_delta)
-    return jwt.encode(payload, SECURE_KEY, algorithm=ENCRYPTION_ALGO)
+    return jwt.encode(payload, SEC_KEY_NEW, algorithm=ALGO_TYPE)
 
 def create_token_payload(user_id: str, uname: str, exp_delta: Optional[timedelta]) -> dict:
     expire = datetime.utcnow() + (exp_delta if exp_delta else timedelta(minutes=15))
@@ -51,7 +51,7 @@ def create_token_payload(user_id: str, uname: str, exp_delta: Optional[timedelta
 
 @auth_router.post("/token_auth")
 async def login_with_token(resp: Response, login_data) -> dict:
-    user_val = ValidateLogin(login_data['email'], login_data['password'])
+    user_val = ValidateUserLogin(login_data['email'], login_data['password'])
     user = user_val.authenticate_user()
     if not user:
         return {"status": False, "uuid": None, "response": resp}
@@ -75,10 +75,10 @@ def load_template(template_name: str, req: Request, msg: str):
 async def process_user_registration(req: Request):
     form = RegistrationForm(req)
     await form.populate_form()
-    new_user = Usr(form.name, form.uname, form.email, form.phone, form.pwd1, form.pwd2)
+    new_user = UserData(form.name, form.uname, form.email, form.phone, form.password_main, form.pwd2)
     req.session["uuid"] = new_user.uid
 
-    user_val = ValidateRegister(new_user)
+    user_val = ValidateUserRegistration(new_user)
     validation_result = user_val.validate()
 
     if not validation_result["status"]:

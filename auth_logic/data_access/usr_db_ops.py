@@ -1,8 +1,8 @@
 # usr_db_ops.py
 
-from usr_db_conf.mongo_setup import MongoClientWrapper
-from usr_constants.db_names import USERS_COLLECTION  
-from usr_entities.user import UserData  
+from usr_db_conf.mongo_setup import MongoDBConn
+from auth_logic.usr_constants.db_cfg import USR_COL_NEW 
+from auth_logic.usr_entities.usr_data_entity import UserData  
 
 import logging
 
@@ -14,14 +14,14 @@ class UserDatabaseOperations:
     """Handles MongoDB interactions for user records."""
 
     def __init__(self) -> None:
-        self.client = MongoClientWrapper()
-        self.collection_name = USERS_COLLECTION
+        self.client = MongoDBConn()
+        self.collection_name = USR_COL_NEW
         self.collection = self.client.get_database()[self.collection_name]
         db_logger.info(f"Connected to collection: {self.collection_name}")
 
     def insert_new_user(self, user: UserData) -> None:
         """Inserts a new user into the database."""
-        db_logger.debug(f"Inserting user: {user.username}")
+        db_logger.debug(f"Inserting user: {user.user_handle}")
         self.collection.insert_one(user.to_dict())
 
     def find_user_by_query(self, query: dict):

@@ -13,8 +13,8 @@ import mediapipe as mp
 import cv2
 
 from usr_constants.embed_cfg import DET_BACKEND, EMB_MODEL, FORCE_DET, SIM_THRESH
-from data_access.embd_storage import EmbedDB
-from auth_logic.usr_exceptions.errors import ProcErr
+from data_access.usr_db_ops import EmbedDB
+from auth_logic.usr_exceptions.error_handler import CustomError
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -38,7 +38,7 @@ class LoginCheck:
                 return False
             return True
         except Exception as e:
-            raise ProcErr(e, sys) from e
+            raise CustomError(e, sys) from e
 
     @staticmethod
     def get_face(img: np.ndarray) -> np.ndarray:
@@ -68,7 +68,7 @@ class LoginCheck:
                 return main_face if main_face else None
 
         except Exception as e:
-            raise ProcErr(e, sys) from e
+            raise CustomError(e, sys) from e
 
     @staticmethod
     def make_embed(face: np.ndarray) -> np.ndarray:
@@ -76,7 +76,7 @@ class LoginCheck:
         try:
             face = LoginCheck.get_face(face)
             if face is None:
-                raise ProcErr("No valid face.", sys)
+                raise CustomError("No valid face.", sys)
             
             embed = DeepFace.represent(
                 img_path=face,
@@ -85,7 +85,7 @@ class LoginCheck:
             )
             return embed
         except Exception as e:
-            raise ProcErr(e, sys) from e
+            raise CustomError(e, sys) from e
 
     @staticmethod
     def get_embeds(images: List[Bytes]) -> List[np.ndarray]:
@@ -115,7 +115,7 @@ class LoginCheck:
             )
             return similarity
         except Exception as e:
-            raise ProcErr(e, sys) from e
+            raise CustomError(e, sys) from e
 
     def match_embed(self, images: bytes) -> bool:
         """Match current embed to stored data."""
@@ -137,7 +137,7 @@ class LoginCheck:
                 log.error(f"Data invalid for user {self.user_id}.")
                 return False
         except Exception as e:
-            raise ProcErr(e, sys) from e
+            raise CustomError(e, sys) from e
 
 class RegProcess:
     def __init__(self, user_id: str) -> None:
@@ -152,4 +152,4 @@ class RegProcess:
             self.db.save_embed(self.user_id, avg)
             log.info(f"Embeddings for user {self.user_id} saved.")
         except Exception as e:
-            raise ProcErr(e, sys) from e
+            raise CustomError(e, sys) from e

@@ -7,8 +7,8 @@ from passlib.context import CryptContext
 
 from auth_logic.data_access.usr_db_ops import UserDatabaseOperations  
 from auth_logic.usr_entities.usr_data_entity import UserData  
-from auth_logic.usr_exceptions.app_errors import CustomApplicationError 
-from auth_logic.usr_log.logger_setup import logger  
+from auth_logic.usr_exceptions.error_handler import CustomError
+from auth_logic.usr_log.setup_logg import logger  
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -95,14 +95,14 @@ class ValidateUserLogin:
             login_status = self.verify_user_inputs()
             if login_status["status"]:
                 user_data = UserDatabaseOperations()
-                user = user_data.fetch_user({"email": self.email_address})
+                user = user_data.find_user_by_query({"email": self.email_address})
                 if user and self.verify_password(self.password_main, user["password"]):
                     return user
                 logger.info("Invalid login attempt")
             return None
         except Exception as ex:
             logger.error(f"Authentication error: {ex}")
-            raise CustomApplicationError(ex, sys) from ex
+            raise CustomError(ex, sys) from ex
 
 class ValidateUserRegistration:
     """Class responsible for validating and registering new users."""
@@ -171,4 +171,4 @@ class ValidateUserRegistration:
             logger.info("New user registered successfully.")
         except Exception as ex:
             logger.error(f"Error saving user: {ex}")
-            raise CustomApplicationError(ex, sys) from ex
+            raise CustomError(ex, sys) from ex

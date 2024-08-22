@@ -1,7 +1,7 @@
 # route_setup.py
 
 import logging
-from phases.app_phase import application
+from phases.app_phase import user_application
 from phases.auth_phase import user_authentikator
 
 # Here we set up all routes. Not much else to do here.
@@ -12,7 +12,7 @@ def configure_routes(app):
         app.include_router(user_authentikator.rtr)
         
         logging.info("Adding application routes.")
-        app.include_router(application.app_router)
+        app.include_router(user_application.app_router)
         
         logging.info("Routes setup complete.")
     except Exception as e:

@@ -42,4 +42,4 @@ class EmbDataHandler:
             self.collection.delete_one({"user_id": user_id})
             log.info(f"Embedding deleted for user {user_id}.")
         except Exception as e:
-            log.error(f"Failed to delete embedding
+            log.error(f"Failed to delete embedding")

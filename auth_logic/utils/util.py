@@ -6,7 +6,7 @@ import yaml
 from dateutil.parser import parse
 from dotenv import dotenv_values
 
-from auth_logic.usr_exceptions import AppException
+from auth_logic.usr_exceptions.error_handler import CustomError
 
 
 class CommonUtils:
@@ -18,7 +18,7 @@ class CommonUtils:
             with open(file_path, "rb") as file:
                 return yaml.safe_load(file)
         except Exception as e:
-            raise AppException(e, sys) from e
+            raise CustomError(e, sys) from e
 
     def now_time(self) -> str:
         """
