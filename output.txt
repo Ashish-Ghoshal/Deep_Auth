@@ -136,6 +136,20 @@ C:.
 |   \---__pycache__
 |           __init__.cpython-38.pyc
 |           
++---controller
+|   +---app_controller
+|   |   \---__pycache__
+|   |           application.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---auth_controller
+|   |   \---__pycache__
+|   |           authentication.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   \---__pycache__
+|           __init__.cpython-38.pyc
+|           
 +---docs
 |       setup.md
 |       
@@ -58633,6 +58647,55 @@ C:.
 |       mediapipe_landmarking_real_time.ipynb
 |       model_comparisons.ipynb
 |       
++---face_auth
+|   +---business_val
+|   |   \---__pycache__
+|   |           user_embedding_val.cpython-38.pyc
+|   |           user_val.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---config
+|   |   +---database
+|   |   |   \---__pycache__
+|   |   |           __init__.cpython-38.pyc
+|   |   |           
+|   |   \---__pycache__
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---constant
+|   |   \---__pycache__
+|   |           auth_constant.cpython-38.pyc
+|   |           database_constants.cpython-38.pyc
+|   |           embedding_constants.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---data_access
+|   |   \---__pycache__
+|   |           user_data.cpython-38.pyc
+|   |           user_embedding_data.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---entity
+|   |   \---__pycache__
+|   |           user.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---exception
+|   |   \---__pycache__
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---logger
+|   |   \---__pycache__
+|   |           __init__.cpython-38.pyc
+|   |           
+|   +---utils
+|   |   \---__pycache__
+|   |           util.cpython-38.pyc
+|   |           __init__.cpython-38.pyc
+|   |           
+|   \---__pycache__
+|           __init__.cpython-38.pyc
+|           
 +---logs
 |       log_2024-08-09-21-23-23.log
 |       log_2024-08-10-12-04-19.log
@@ -58694,6 +58757,7 @@ C:.
 |       log_2024-08-21-15-38-02.log
 |       log_2024-08-21-15-40-47.log
 |       log_2024-08-22-08-13-07.log
+|       log_2024-08-22-13-36-20.log
 |       
 +---phase
 |   +---app_controller
