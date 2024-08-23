@@ -1,7 +1,6 @@
 
 
 import logging
-
 import setuptools
 
 logging.basicConfig(level=logging.DEBUG)
@@ -11,7 +10,7 @@ log = logging.getLogger("SetupLogger")
 TITLE = "Facial Verification"  
 NUM = "0.1.5"
 NAME = "Ashish Ghoshal"
-SUMM = "Facial Verification"
+DESC = " Facial Verfication Project"
 
 
 # Setting up the package with the above information
@@ -20,7 +19,7 @@ setuptools.setup(
     name=TITLE,
     version=NUM,
     author=NAME,
-    description=SUMM,
+    description=DESC,
     packages=setuptools.find_packages(),
 )
 
