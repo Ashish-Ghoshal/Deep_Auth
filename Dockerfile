@@ -4,20 +4,26 @@ COPY . /app
 
 WORKDIR /app
 
-ARG SEC_KEY_NEW
-ARG ALGO_TYPE
-ARG DB_URL_NEW
-ARG DB_NAME_NEW
-ARG USR_COL_NEW
 ARG EMBED_COL_NEW
+ARG ALGO_TYPE
+ARG SEC_KEY_NEW
+ARG DB_NAME_NEW
+ARG DB_URL_NEW
+ARG USR_COL_NEW
 
-ENV SECRET_KEY=$SEC_KEY_NEW
-ENV ALGORITHM=$ALGO_TYPE
-ENV MONGODB_URL_KEY=$DB_URL_NEW
-ENV DATABASE_NAME=$DB_NAME_NEW
-ENV USER_COLLECTION_NAME=$USR_COL_NEW
-ENV EMBEDDING_COLLECTION_NAME=$EMBED_COL_NEW
+ENV DB_URL_NEW=$DB_URL_NEW
+ENV SEC_KEY_NEW=$SEC_KEY_NEW
+ENV ALGO_TYPE=$ALGO_TYPE
 
-RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y && pip install -r requirements.txt
+ENV DB_NAME_NEW=$DB_NAME_NEW
 
-CMD ["python", "app.py"]
+ENV EMBED_COL_NEW=$EMBED_COL_NEW
+ENV USR_COL_NEW=$USR_COL_NEW
+
+RUN apt-get update
+RUN apt-get install -y ffmpeg libsm6 libxext6
+RUN pip install --verbose -r requirements.txt
+
+
+CMD ["python", "main_entry.py"]
+

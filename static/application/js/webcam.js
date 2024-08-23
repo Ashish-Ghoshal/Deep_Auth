@@ -7,14 +7,16 @@ function initializeWebcam() {
 // Sets up webcam configuration parameters
 function setupWebcamSettings() {
     Webcam.set({
-        width: 500,
-        height: 450,
-        dest_width: 500,
-        dest_height: 450,
-        image_format: 'jpeg',
-        jpeg_quality: 90
+        height:  500,
+        width: 600,
+        jpeg_quality: 90,
+        dest_width: 300,
+        dest_height: 400,
+        image_format: 'jpeg'
+        
     });
 }
+
 
 // Attaches webcam to a specific element on the page
 function attachWebcamToElement(elementSelector) {
