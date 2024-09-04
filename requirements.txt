@@ -1,19 +1,32 @@
 pandas==1.4.4
-pymongo[srv]==4.2.0
-fastapi==0.83.0
+pymongo==4.6.3
+fastapi==0.109.1
 python-jose==3.3.0
 uvicorn[standard]==0.18.3
 python-multipart==0.0.5
-Jinja2==3.1.2
+Jinja2==3.1.4
 bcrypt==4.0.0
-starlette==0.19.1
+starlette==0.27.0
 PyYAML==6.0
 python-dotenv==0.21.0
 passlib==1.7.4
 notebook
-Pillow==9.2.0
+Pillow==10.3.0
 deepface==0.0.75
 dill==0.3.5.1
 cmake==3.25.2
 dlib==19.24.2
 mediapipe==0.10.14
+anyio>=4.4.0 # not directly required, pinned by Snyk to avoid a vulnerability
+ipython>=8.10.0 # not directly required, pinned by Snyk to avoid a vulnerability
+jupyter-server>=2.14.1 # not directly required, pinned by Snyk to avoid a vulnerability
+keras>=2.13.1rc0 # not directly required, pinned by Snyk to avoid a vulnerability
+numpy>=1.22.2 # not directly required, pinned by Snyk to avoid a vulnerability
+requests>=2.32.2 # not directly required, pinned by Snyk to avoid a vulnerability
+setuptools>=70.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
+tensorflow>=2.12.0 # not directly required, pinned by Snyk to avoid a vulnerability
+tornado>=6.4.1 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3>=2.2.2 # not directly required, pinned by Snyk to avoid a vulnerability
+werkzeug>=3.0.3 # not directly required, pinned by Snyk to avoid a vulnerability
+wheel>=0.38.0 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
